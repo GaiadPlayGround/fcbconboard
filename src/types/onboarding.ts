@@ -1,5 +1,10 @@
 export type TaskStatus = 'done' | 'active' | 'pending' | 'locked';
 
+export interface ActionButton {
+  label: string;
+  action: string;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -11,7 +16,9 @@ export interface Task {
   tags?: { label: string; recommended?: boolean }[];
   subtext?: string;
   isBonus?: boolean;
+  isOptional?: boolean;
   comingSoon?: boolean;
+  actionButtons?: ActionButton[];
 }
 
 export interface Chapter {

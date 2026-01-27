@@ -20,6 +20,10 @@ export const initialChapters: Chapter[] = [
           { label: 'Rabby' },
           { label: 'MetaMask' },
         ],
+        actionButtons: [
+          { label: 'Copy wallet address', action: 'copy_address' },
+          { label: 'Keep your login safe', action: 'security_tips' },
+        ],
       },
       {
         id: '1-3',
@@ -40,6 +44,7 @@ export const initialChapters: Chapter[] = [
         status: 'pending',
         link: 'https://zora.co/invite/fcbc',
         isBonus: true,
+        isOptional: true,
       },
       {
         id: '1-b2',
@@ -47,6 +52,7 @@ export const initialChapters: Chapter[] = [
         status: 'pending',
         link: 'https://zora.co/@fcbc',
         isBonus: true,
+        isOptional: true,
       },
     ],
   },
@@ -161,4 +167,38 @@ export const initialChapters: Chapter[] = [
       'Cohort 1 launch',
     ],
   },
+];
+
+export interface FyreApp {
+  id: string;
+  name: string;
+  description: string;
+  status: 'demo' | 'beta' | 'live' | 'coming';
+  isOfficial: boolean;
+  creator?: string;
+}
+
+export const fyreApps: FyreApp[] = [
+  { id: '0', name: 'Fyre Docs', description: 'Documentation hub', status: 'demo', isOfficial: true },
+  { id: '1', name: 'PureBreed Explorer', description: 'Browse DNA tokens', status: 'beta', isOfficial: true },
+  { id: '2', name: 'Portfolio Manager', description: 'Track your assets', status: 'coming', isOfficial: true },
+  { id: '3', name: 'Custody and Snapshots', description: 'Manage custody', status: 'coming', isOfficial: true },
+  { id: '4', name: 'Fyre Labs', description: 'Research and experiments', status: 'coming', isOfficial: true },
+  { id: '5', name: 'Fyre Arena', description: 'Compete and earn', status: 'coming', isOfficial: true },
+];
+
+export const communityFyreApps: FyreApp[] = [
+  { id: 'c1', name: 'FyreHerald', description: 'News aggregator', status: 'live', isOfficial: false, creator: 'HawkNode' },
+];
+
+export interface SnapshotToken {
+  id: string;
+  symbol: string;
+}
+
+export const lastWeekSnapshots: SnapshotToken[] = [
+  { id: '1', symbol: '$FCBC121' },
+  { id: '2', symbol: '$FCBC19' },
+  { id: '3', symbol: '$FCBC56' },
+  { id: '4', symbol: '$FCBC2' },
 ];
