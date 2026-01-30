@@ -1,4 +1,4 @@
-import { ChevronRight, Info, Lock, Copy, Shield, ExternalLink } from 'lucide-react';
+import { ChevronRight, Info, Lock, Shield, ExternalLink, Edit2, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Task } from '@/types/onboarding';
 import { TaskIcon } from './TaskIcon';
@@ -15,21 +15,27 @@ interface TaskItemProps {
   task: Task;
   onComplete?: (taskId: string) => void;
   canComplete?: boolean;
+  onOpenAddressPopup?: () => void;
+  walletAddress?: string;
+  isChapterLocked?: boolean;
 }
 
-export function TaskItem({ task, onComplete, canComplete = true }: TaskItemProps) {
+export function TaskItem({ 
+  task, 
+  onComplete, 
+  canComplete = true, 
+  onOpenAddressPopup,
+  walletAddress,
+  isChapterLocked = false
+}: TaskItemProps) {
   const isDone = task.status === 'done';
   const isActive = task.status === 'active';
-  const isLocked = task.status === 'locked';
+  const isLocked = task.status === 'locked' || isChapterLocked;
   const isPending = task.status === 'pending';
   
   const handleActionClick = (action: string) => {
-    if (action === 'copy_address') {
-      navigator.clipboard.writeText('0x...your_wallet_address');
-      toast({
-        title: "Address copied!",
-        description: "Wallet address copied to clipboard",
-      });
+    if (action === 'submit_address') {
+      onOpenAddressPopup?.();
     } else if (action === 'security_tips') {
       toast({
         title: "Security Tips",
@@ -43,7 +49,7 @@ export function TaskItem({ task, onComplete, canComplete = true }: TaskItemProps
       className={cn(
         "flex flex-col gap-2 py-3 px-1 transition-all duration-200",
         isDone && "task-done",
-        isActive && "animate-fade-in"
+        isActive && !isChapterLocked && "animate-fade-in"
       )}
     >
       <div className="flex items-center gap-3">
@@ -72,7 +78,7 @@ export function TaskItem({ task, onComplete, canComplete = true }: TaskItemProps
         
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className={cn(
               "text-sm font-title",
               isDone ? "text-muted-foreground" : isLocked || isPending ? "text-muted-foreground/70" : "text-foreground"
@@ -102,6 +108,22 @@ export function TaskItem({ task, onComplete, canComplete = true }: TaskItemProps
                 coming soon
               </span>
             )}
+            
+            {/* Warning Label */}
+            {task.warningLabel && (
+              <span className="warning-label flex items-center gap-1">
+                <Shield className="w-3 h-3" />
+                {task.warningLabel}
+              </span>
+            )}
+            
+            {/* Auto Verify Badge */}
+            {task.autoVerify && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-success/10 text-success border border-success/20 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                Auto-verify
+              </span>
+            )}
           </div>
           
           {task.subtext && (
@@ -128,7 +150,7 @@ export function TaskItem({ task, onComplete, canComplete = true }: TaskItemProps
           )}
           
           {/* Action Buttons */}
-          {task.actionButtons && task.actionButtons.length > 0 && isActive && (
+          {task.actionButtons && task.actionButtons.length > 0 && isActive && !isChapterLocked && (
             <div className="flex flex-wrap gap-2 mt-3">
               {task.actionButtons.map((btn) => (
                 <Button
@@ -138,9 +160,11 @@ export function TaskItem({ task, onComplete, canComplete = true }: TaskItemProps
                   className="h-7 text-xs gap-1.5 bg-muted/30 border-border/50 hover:bg-primary/10 hover:border-primary/30"
                   onClick={() => handleActionClick(btn.action)}
                 >
-                  {btn.action === 'copy_address' && <Copy className="w-3 h-3" />}
-                  {btn.action === 'security_tips' && <Shield className="w-3 h-3" />}
+                  {btn.action === 'submit_address' && <Edit2 className="w-3 h-3" />}
                   {btn.label}
+                  {walletAddress && btn.action === 'submit_address' && (
+                    <CheckCircle2 className="w-3 h-3 text-success ml-1" />
+                  )}
                 </Button>
               ))}
             </div>
@@ -153,8 +177,10 @@ export function TaskItem({ task, onComplete, canComplete = true }: TaskItemProps
         <div className="flex-shrink-0 flex items-center gap-2">
           {isDone ? (
             <span className="text-xs text-primary font-cta">DONE</span>
-          ) : isActive && canComplete ? (
+          ) : isActive && canComplete && !isChapterLocked ? (
             <span className="text-xs text-primary/80 font-cta">Next</span>
+          ) : isLocked ? (
+            <Lock className="w-3.5 h-3.5 text-muted-foreground/40" />
           ) : null}
           <ChevronRight className={cn(
             "w-4 h-4",
@@ -187,11 +213,6 @@ export function BonusTaskItem({ task, onAction }: BonusTaskItemProps) {
       <span className="text-sm text-foreground font-title flex-1">
         {task.title}
       </span>
-      {task.isOptional && (
-        <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider">
-          optional
-        </span>
-      )}
       <Button
         variant="outline"
         size="sm"

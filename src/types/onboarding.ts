@@ -19,6 +19,10 @@ export interface Task {
   isOptional?: boolean;
   comingSoon?: boolean;
   actionButtons?: ActionButton[];
+  warningLabel?: string;
+  autoVerify?: boolean;
+  socialVerify?: boolean;
+  linkSubmit?: boolean;
 }
 
 export interface Chapter {

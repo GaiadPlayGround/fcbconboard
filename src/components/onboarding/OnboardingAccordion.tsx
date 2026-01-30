@@ -1,11 +1,16 @@
 import { useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { Chapter } from '@/types/onboarding';
 import { initialChapters } from '@/data/onboardingData';
 import { ChapterCard } from './ChapterCard';
-import { BottomNav } from './BottomNav';
-import { SnapshotsCustodySection, HowSnapshotsWork, SnapshotBlindBoxes } from './SnapshotSections';
+import { FyreKeyBalance } from './FyreKeyBalance';
+import { TaskCompletionPopup } from './TaskCompletionPopup';
+import { WalletAddressPopup } from './WalletAddressPopup';
+import { SnapshotsCustodySection, HowSnapshotsWork, FyreBlindBoxes } from './SnapshotSections';
 import { EcosystemProductsSection } from './EcosystemProducts';
-import { Flame } from 'lucide-react';
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import { ArrowLeft } from 'lucide-react';
 
 export function OnboardingAccordion() {
   const [chapters, setChapters] = useState<Chapter[]>(initialChapters);
@@ -13,14 +18,29 @@ export function OnboardingAccordion() {
   const [fyreKeys, setFyreKeys] = useState(5);
   const [claimedChapters, setClaimedChapters] = useState<Set<number>>(new Set());
   const [animatingKeys, setAnimatingKeys] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [showAddressPopup, setShowAddressPopup] = useState(false);
+  
+  // Popup state
+  const [showCompletionPopup, setShowCompletionPopup] = useState(false);
+  const [completedTaskInfo, setCompletedTaskInfo] = useState({ title: '', keys: 0 });
   
   const handleToggle = useCallback((chapterId: number) => {
     const chapter = chapters.find(c => c.id === chapterId);
-    if (chapter?.isLocked) return;
+    // Allow viewing locked chapters but not completing tasks
     setExpandedChapter(prev => prev === chapterId ? null : chapterId);
   }, [chapters]);
   
   const handleCompleteTask = useCallback((taskId: string) => {
+    const taskChapter = chapters.find(c => c.tasks.some(t => t.id === taskId));
+    const task = taskChapter?.tasks.find(t => t.id === taskId);
+    
+    if (!task || task.status !== 'active') return;
+    
+    // Show completion popup
+    setCompletedTaskInfo({ title: task.title, keys: 10 });
+    setShowCompletionPopup(true);
+    
     setChapters(prev => {
       const updated = prev.map(chapter => ({
         ...chapter,
@@ -50,11 +70,11 @@ export function OnboardingAccordion() {
       });
     });
     
-    // Award Fyre Keys with animation
+    // Award 10 Fyre Keys per task with animation
     setAnimatingKeys(true);
-    setFyreKeys(prev => prev + 5);
+    setFyreKeys(prev => prev + 10);
     setTimeout(() => setAnimatingKeys(false), 500);
-  }, []);
+  }, [chapters]);
   
   const isChapterMainComplete = useCallback((chapter: Chapter) => {
     return chapter.tasks.length > 0 && chapter.tasks.every(t => t.status === 'done');
@@ -83,36 +103,55 @@ export function OnboardingAccordion() {
   }, [claimedChapters]);
   
   const handleNextUp = useCallback((chapterId: number) => {
-    // Find the active task and scroll to it or highlight it
     const chapter = chapters.find(c => c.id === chapterId);
     if (chapter) {
       const activeTask = chapter.tasks.find(t => t.status === 'active');
       if (activeTask) {
-        // Complete the active task
         handleCompleteTask(activeTask.id);
       }
     }
   }, [chapters, handleCompleteTask]);
   
+  const handleOpenAddressPopup = useCallback(() => {
+    setShowAddressPopup(true);
+  }, []);
+  
+  const handleSubmitAddress = useCallback((address: string) => {
+    setWalletAddress(address);
+    setShowAddressPopup(false);
+  }, []);
+  
+  const scrollToEarnMore = () => {
+    document.querySelector('#chapters')?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-20">
+      <Header fyreKeys={fyreKeys} />
+      
       {/* Header */}
-      <header className="pt-12 pb-8 px-4 text-center">
-        <h1 className="text-2xl font-title text-foreground">
-          How to Participate
-        </h1>
-        
-        {/* Fyre Keys Counter */}
-        <div className={`mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card/50 border border-border/30 transition-all duration-300 ${animatingKeys ? 'scale-110 ring-2 ring-primary' : ''}`}>
-          <Flame className={`w-4 h-4 text-primary ${animatingKeys ? 'animate-pulse' : ''}`} />
-          <span className="text-sm font-cta text-foreground">
-            {fyreKeys} Fyre Keys
-          </span>
+      <header className="pt-20 pb-4 px-4">
+        <div className="container max-w-md mx-auto">
+          <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4">
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm">Back to Home</span>
+          </Link>
+          
+          <h1 className="text-2xl font-title text-foreground text-center mb-6">
+            How to Participate
+          </h1>
+          
+          {/* Fyre Keys Balance */}
+          <FyreKeyBalance 
+            balance={fyreKeys} 
+            isAnimating={animatingKeys}
+            onEarnMore={scrollToEarnMore}
+          />
         </div>
       </header>
       
       {/* Chapters */}
-      <main className="container max-w-md mx-auto px-4 space-y-3">
+      <main id="chapters" className="container max-w-md mx-auto px-4 space-y-3 pt-4">
         {chapters.map((chapter) => (
           <ChapterCard
             key={chapter.id}
@@ -124,6 +163,8 @@ export function OnboardingAccordion() {
             onClaim={() => handleClaim(chapter.id)}
             isClaimed={claimedChapters.has(chapter.id)}
             onNextUp={() => handleNextUp(chapter.id)}
+            onOpenAddressPopup={handleOpenAddressPopup}
+            walletAddress={walletAddress}
           />
         ))}
       </main>
@@ -134,14 +175,30 @@ export function OnboardingAccordion() {
       {/* How Snapshots Work */}
       <HowSnapshotsWork />
       
-      {/* Snapshot Hint BlindBoxes */}
-      <SnapshotBlindBoxes />
+      {/* Fyre BlindBoxes */}
+      <FyreBlindBoxes />
       
       {/* Ecosystem Products */}
       <EcosystemProductsSection />
       
-      {/* Bottom Nav */}
-      <BottomNav fyreKeys={fyreKeys} />
+      {/* Footer */}
+      <Footer />
+      
+      {/* Task Completion Popup */}
+      <TaskCompletionPopup
+        isVisible={showCompletionPopup}
+        taskTitle={completedTaskInfo.title}
+        keysEarned={completedTaskInfo.keys}
+        onClose={() => setShowCompletionPopup(false)}
+      />
+      
+      {/* Wallet Address Popup */}
+      <WalletAddressPopup
+        isOpen={showAddressPopup}
+        onClose={() => setShowAddressPopup(false)}
+        onSubmit={handleSubmitAddress}
+        currentAddress={walletAddress}
+      />
     </div>
   );
 }

@@ -21,20 +21,21 @@ export const initialChapters: Chapter[] = [
           { label: 'MetaMask' },
         ],
         actionButtons: [
-          { label: 'Copy wallet address', action: 'copy_address' },
-          { label: 'Keep your login safe', action: 'security_tips' },
+          { label: 'Submit USDC address', action: 'submit_address' },
         ],
+        warningLabel: 'Keep your login safe',
       },
       {
         id: '1-3',
-        title: 'Send USDC or ETH (Base)',
+        title: 'Connect your Wallet',
         status: 'pending',
-        subtext: 'to your address',
       },
       {
         id: '1-4',
-        title: 'Connect your Wallet',
+        title: 'Send USDC or ETH (Base)',
         status: 'pending',
+        subtext: 'to your address',
+        autoVerify: true,
       },
     ],
     bonusTasks: [
@@ -44,7 +45,6 @@ export const initialChapters: Chapter[] = [
         status: 'pending',
         link: 'https://zora.co/invite/fcbc',
         isBonus: true,
-        isOptional: true,
       },
       {
         id: '1-b2',
@@ -52,7 +52,6 @@ export const initialChapters: Chapter[] = [
         status: 'pending',
         link: 'https://zora.co/@fcbc',
         isBonus: true,
-        isOptional: true,
       },
     ],
   },
@@ -105,12 +104,14 @@ export const initialChapters: Chapter[] = [
           { label: 'Farcaster' },
           { label: 'TikTok' },
         ],
+        socialVerify: true,
       },
       {
         id: '3-2',
         title: 'Join Discord',
         status: 'locked',
         subtext: 'Introduce yourself. Share your favourite PureBreed.',
+        socialVerify: true,
       },
     ],
   },
@@ -137,7 +138,8 @@ export const initialChapters: Chapter[] = [
         id: '4-3',
         title: 'Start FyreBasePosting',
         status: 'locked',
-        subtext: 'Earn Fyre Keys',
+        subtext: 'Earn Fyre Keys - Submit 1 link per day',
+        linkSubmit: true,
       },
       {
         id: '4-4',
@@ -172,6 +174,7 @@ export const initialChapters: Chapter[] = [
 export interface FyreApp {
   id: string;
   name: string;
+  subtitle: string;
   description: string;
   status: 'demo' | 'beta' | 'live' | 'coming';
   isOfficial: boolean;
@@ -179,16 +182,16 @@ export interface FyreApp {
 }
 
 export const fyreApps: FyreApp[] = [
-  { id: '0', name: 'Fyre Docs', description: 'Documentation hub', status: 'demo', isOfficial: true },
-  { id: '1', name: 'PureBreed Explorer', description: 'Browse DNA tokens', status: 'beta', isOfficial: true },
-  { id: '2', name: 'Portfolio Manager', description: 'Track your assets', status: 'coming', isOfficial: true },
-  { id: '3', name: 'Custody and Snapshots', description: 'Manage custody', status: 'coming', isOfficial: true },
-  { id: '4', name: 'Fyre Labs', description: 'Research and experiments', status: 'coming', isOfficial: true },
-  { id: '5', name: 'Fyre Arena', description: 'Compete and earn', status: 'coming', isOfficial: true },
+  { id: '0', name: 'Fyre Docs', subtitle: 'Onchain Knowledgebase', description: 'AI-native living knowledgebase. Ask anything in natural language. Learn via games and quizzes. Earn Fyre Keys. Share pages. Execute tasks.', status: 'demo', isOfficial: true },
+  { id: '1', name: 'PureBreeds Explorer', subtitle: 'DNA Markets Gallery', description: 'Browse and discover DNA tokens', status: 'beta', isOfficial: true },
+  { id: '2', name: 'Portfolio Manager', subtitle: 'Asset Tracking', description: 'Track your assets', status: 'coming', isOfficial: true },
+  { id: '3', name: 'Custody Snapshots', subtitle: 'Snapshot Dashboards', description: 'Manage custody', status: 'coming', isOfficial: true },
+  { id: '4', name: 'Fyre Labs', subtitle: 'Research Hub', description: 'Research and experiments', status: 'coming', isOfficial: true },
+  { id: '5', name: 'Fyre Arena', subtitle: 'Custody Battleground', description: 'Compete and earn', status: 'coming', isOfficial: true },
 ];
 
 export const communityFyreApps: FyreApp[] = [
-  { id: 'c1', name: 'FyreHerald', description: 'News aggregator', status: 'live', isOfficial: false, creator: 'HawkNode' },
+  { id: 'c1', name: 'FyreHerald', subtitle: 'News Aggregator', description: 'News aggregator', status: 'live', isOfficial: false, creator: 'HawkNode' },
 ];
 
 export interface SnapshotToken {
