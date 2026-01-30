@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { ChevronDown, Lock, Flame, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Chapter } from '@/types/onboarding';
@@ -15,6 +15,8 @@ interface ChapterCardProps {
   onClaim: () => void;
   isClaimed: boolean;
   onNextUp?: () => void;
+  onOpenAddressPopup?: () => void;
+  walletAddress?: string;
 }
 
 export function ChapterCard({ 
@@ -25,7 +27,9 @@ export function ChapterCard({
   canClaim,
   onClaim,
   isClaimed,
-  onNextUp
+  onNextUp,
+  onOpenAddressPopup,
+  walletAddress
 }: ChapterCardProps) {
   const [showClaimAnimation, setShowClaimAnimation] = useState(false);
   const [isClaimingKeys, setIsClaimingKeys] = useState(false);
@@ -55,14 +59,14 @@ export function ChapterCard({
   
   // Find active task to determine if user can complete tasks
   const activeTask = mainTasks.find(t => t.status === 'active');
-  const canCompleteNextTask = !!activeTask;
+  const canCompleteNextTask = !!activeTask && !chapter.isLocked;
   
   return (
     <div 
       className={cn(
         "rounded-xl overflow-hidden transition-all duration-300 relative",
-        chapter.isLocked ? "glass-card-locked" : "glass-card",
-        isExpanded && "ring-1 ring-primary/20"
+        chapter.isLocked ? "glass-card-locked opacity-60" : "glass-card",
+        isExpanded && !chapter.isLocked && "ring-1 ring-primary/20"
       )}
     >
       {/* Claim Animation Overlay */}
@@ -80,8 +84,7 @@ export function ChapterCard({
         onClick={onToggle}
         className={cn(
           "w-full p-4 flex flex-col gap-3 text-left transition-colors",
-          !chapter.isLocked && "hover:bg-muted/10",
-          chapter.isLocked && "cursor-not-allowed opacity-60"
+          "hover:bg-muted/10"
         )}
       >
         <div className="flex items-center justify-between">
@@ -111,7 +114,7 @@ export function ChapterCard({
           </div>
           
           <div className="flex items-center gap-3">
-            {!chapter.isLocked && totalMain > 0 && (
+            {totalMain > 0 && (
               <span className="text-xs text-muted-foreground">
                 {completedMain} / {totalMain}
               </span>
@@ -128,7 +131,7 @@ export function ChapterCard({
           </div>
         </div>
         
-        {!chapter.isLocked && totalMain > 0 && (
+        {totalMain > 0 && (
           <ProgressBar 
             completed={completedMain} 
             total={totalMain} 
@@ -137,8 +140,8 @@ export function ChapterCard({
         )}
       </button>
       
-      {/* Expanded Content */}
-      {isExpanded && !chapter.isLocked && (
+      {/* Expanded Content - Now visible for locked chapters too */}
+      {isExpanded && (
         <div className="px-4 pb-4 animate-fade-in">
           {/* Tasks */}
           {chapter.tasks.length > 0 && (
@@ -148,21 +151,21 @@ export function ChapterCard({
                   key={task.id} 
                   task={task} 
                   onComplete={onCompleteTask}
-                  canComplete={task.status === 'active'}
+                  canComplete={task.status === 'active' && !chapter.isLocked}
+                  onOpenAddressPopup={onOpenAddressPopup}
+                  walletAddress={walletAddress}
+                  isChapterLocked={chapter.isLocked}
                 />
               ))}
             </div>
           )}
           
-          {/* Bonus Tasks - Optional */}
-          {chapter.bonusTasks && chapter.bonusTasks.length > 0 && (
+          {/* Bonus Tasks */}
+          {chapter.bonusTasks && chapter.bonusTasks.length > 0 && !chapter.isLocked && (
             <div className="mt-4 pt-3 border-t border-border/20">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs text-muted-foreground uppercase tracking-wider">
                   Bonus
-                </span>
-                <span className="text-[10px] text-muted-foreground/50 uppercase">
-                  (Optional)
                 </span>
               </div>
               {chapter.bonusTasks.map((task) => (
@@ -186,8 +189,8 @@ export function ChapterCard({
             </div>
           )}
           
-          {/* Claim Reward */}
-          {canClaim && !isClaimed && (
+          {/* Claim Reward - Only for unlocked chapters */}
+          {canClaim && !isClaimed && !chapter.isLocked && (
             <button
               onClick={handleClaim}
               disabled={isClaimingKeys}
@@ -208,17 +211,30 @@ export function ChapterCard({
             </button>
           )}
           
-          {/* Next Up CTA */}
-          {!allMainComplete && activeTask && (
+          {/* Next Up CTA with Rainbow Glow - Only for unlocked chapters */}
+          {!allMainComplete && activeTask && !chapter.isLocked && (
             <button
               onClick={handleNextUp}
               className="mt-4 w-full flex items-center justify-end gap-1.5 py-2 group"
             >
-              <span className="text-xs text-primary font-cta group-hover:underline transition-all">
+              <span className={cn(
+                "text-xs font-cta px-3 py-1.5 rounded-full transition-all",
+                "bg-primary/20 text-primary",
+                "animate-rainbow-glow animate-pulse-glow"
+              )}>
                 Next up
               </span>
               <ArrowRight className="w-3.5 h-3.5 text-primary group-hover:translate-x-0.5 transition-transform" />
             </button>
+          )}
+          
+          {/* Locked message */}
+          {chapter.isLocked && (
+            <div className="mt-4 text-center py-3 bg-muted/10 rounded-lg">
+              <p className="text-xs text-muted-foreground">
+                Complete the previous chapter to unlock these tasks
+              </p>
+            </div>
           )}
         </div>
       )}

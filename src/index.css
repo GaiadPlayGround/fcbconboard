@@ -6,6 +6,54 @@
 
 @layer base {
   :root {
+    /* FCBC.fun Light Theme */
+    --background: 220 20% 97%;
+    --foreground: 220 15% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 10%;
+    --card-glass: 0 0% 98%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 10%;
+
+    --primary: 217 91% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 12% 92%;
+    --secondary-foreground: 220 10% 40%;
+
+    --muted: 220 10% 90%;
+    --muted-foreground: 220 8% 45%;
+
+    --accent: 217 80% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --success: 142 70% 40%;
+    --success-foreground: 142 70% 95%;
+
+    --destructive: 0 84% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 10% 88%;
+    --input: 220 10% 88%;
+    --ring: 217 91% 50%;
+
+    --radius: 1rem;
+
+    /* Custom FCBC tokens */
+    --glass-bg: 0 0% 100%;
+    --glass-border: 220 10% 88%;
+    --glass-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+    --progress-gradient: linear-gradient(90deg, hsl(217 91% 50%) 0%, hsl(217 91% 65%) 100%);
+    --vignette: radial-gradient(ellipse at center, transparent 0%, hsl(220 20% 95%) 100%);
+    
+    /* Locked state */
+    --locked: 220 8% 60%;
+    --locked-bg: 220 10% 94%;
+  }
+
+  .dark {
     /* FCBC.fun Dark Theme - Infrastructure Grade */
     --background: 220 15% 5%;
     --foreground: 220 10% 92%;
@@ -39,8 +87,6 @@
     --input: 220 10% 15%;
     --ring: 217 91% 60%;
 
-    --radius: 1rem;
-
     /* Custom FCBC tokens */
     --glass-bg: 220 12% 9%;
     --glass-border: 220 10% 18%;
@@ -51,11 +97,6 @@
     /* Locked state */
     --locked: 220 8% 35%;
     --locked-bg: 220 10% 7%;
-  }
-
-  .dark {
-    --background: 220 15% 5%;
-    --foreground: 220 10% 92%;
   }
 }
 
@@ -94,7 +135,7 @@
     background: var(--progress-gradient);
   }
 
-.text-link {
+  .text-link {
     @apply text-primary hover:text-primary/80 transition-colors;
   }
 
@@ -120,6 +161,29 @@
   .animate-float-up {
     animation: float-up 0.6s ease-out forwards;
   }
+  
+  @keyframes rainbow-glow {
+    0% { box-shadow: 0 0 10px hsl(0 80% 60% / 0.5), 0 0 20px hsl(0 80% 60% / 0.3); }
+    16% { box-shadow: 0 0 10px hsl(45 80% 60% / 0.5), 0 0 20px hsl(45 80% 60% / 0.3); }
+    33% { box-shadow: 0 0 10px hsl(120 80% 60% / 0.5), 0 0 20px hsl(120 80% 60% / 0.3); }
+    50% { box-shadow: 0 0 10px hsl(180 80% 60% / 0.5), 0 0 20px hsl(180 80% 60% / 0.3); }
+    66% { box-shadow: 0 0 10px hsl(217 80% 60% / 0.5), 0 0 20px hsl(217 80% 60% / 0.3); }
+    83% { box-shadow: 0 0 10px hsl(280 80% 60% / 0.5), 0 0 20px hsl(280 80% 60% / 0.3); }
+    100% { box-shadow: 0 0 10px hsl(0 80% 60% / 0.5), 0 0 20px hsl(0 80% 60% / 0.3); }
+  }
+  
+  .animate-rainbow-glow {
+    animation: rainbow-glow 3s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 1.5s ease-in-out infinite;
+  }
 
   .font-title {
     @apply font-semibold tracking-tight;
@@ -131,6 +195,11 @@
 
   .font-cta {
     @apply font-medium;
+  }
+  
+  /* Warning label style */
+  .warning-label {
+    @apply text-xs px-2 py-0.5 rounded bg-destructive/10 text-destructive border border-destructive/20;
   }
 }
 
@@ -150,4 +219,9 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground));
+}
+
+/* Default to dark mode */
+html {
+  @apply dark;
 }
