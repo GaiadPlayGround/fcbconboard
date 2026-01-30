@@ -1,8 +1,11 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Plus, Mail } from 'lucide-react';
+import { ArrowRight, Plus, Mail, Clock, History } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
+
+const snapshotTokens = ['$FCBC121', '$FCBC19', '$FCBC56'];
 
 const featuredPurebreeds = [
   {
@@ -202,6 +205,9 @@ export default function Home() {
             </div>
           </section>
           
+          {/* Snapshots and Custody Section */}
+          <SnapshotsAndCustodySection />
+          
           {/* FyreApps Spotlight */}
           <section className="py-8">
             <h2 className="text-lg font-title text-foreground uppercase tracking-wider mb-6">
@@ -239,5 +245,100 @@ export default function Home() {
       
       <Footer />
     </div>
+  );
+}
+
+function SnapshotsAndCustodySection() {
+  const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 14, minutes: 29, seconds: 55 });
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        let { days, hours, minutes, seconds } = prev;
+        seconds--;
+        if (seconds < 0) { seconds = 59; minutes--; }
+        if (minutes < 0) { minutes = 59; hours--; }
+        if (hours < 0) { hours = 23; days--; }
+        if (days < 0) { days = 0; hours = 0; minutes = 0; seconds = 0; }
+        return { days, hours, minutes, seconds };
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+  
+  return (
+    <section className="py-8">
+      {/* Title */}
+      <h2 className="text-lg font-title uppercase tracking-wider mb-3">
+        <span className="text-primary">SNAPSHOTS</span>
+        <span className="text-muted-foreground font-normal"> AND CUSTODY</span>
+      </h2>
+      <p className="text-sm text-muted-foreground mb-6">
+        Monitor snapshot events and earn custial participation over species-level digital genomic signatures.
+      </p>
+      
+      {/* Countdown Card */}
+      <div className="glass-card rounded-2xl p-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-muted-foreground" />
+            <span className="text-sm font-title text-foreground uppercase tracking-wide">
+              Epoch 1 Ends In
+            </span>
+          </div>
+          <button className="p-2 rounded-full hover:bg-muted/30 transition-colors">
+            <History className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </div>
+        
+        {/* Countdown Timer */}
+        <div className="grid grid-cols-4 gap-3 mb-6">
+          {[
+            { value: timeLeft.days, label: 'DAYS' },
+            { value: timeLeft.hours, label: 'HOURS' },
+            { value: timeLeft.minutes, label: 'MIN' },
+            { value: timeLeft.seconds, label: 'SEC' },
+          ].map((item) => (
+            <div key={item.label} className="text-center">
+              <div className="text-3xl md:text-4xl font-title text-primary mb-1">
+                {item.value}
+              </div>
+              <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                {item.label}
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Bottom Section */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          {/* Last Snapshot Signals */}
+          <div>
+            <p className="text-sm text-muted-foreground mb-2">Last Snapshot Signals</p>
+            <div className="flex flex-wrap gap-2">
+              {snapshotTokens.map((token) => (
+                <span 
+                  key={token}
+                  className="px-3 py-1.5 rounded-full bg-muted/30 border border-border/50 text-sm text-foreground font-cta"
+                >
+                  {token}
+                </span>
+              ))}
+            </div>
+          </div>
+          
+          {/* View Hint */}
+          <div className="text-right">
+            <Button className="bg-secondary hover:bg-secondary/80 text-foreground px-6 mb-2">
+              VIEW HINT
+            </Button>
+            <p className="text-xs text-muted-foreground max-w-[200px]">
+              Hints reveal upcoming snapshot mechanics and custody conditions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
