@@ -22,13 +22,13 @@ export function SnapshotsCustodySection() {
   }, []);
   
   return (
-    <section className="container max-w-md mx-auto px-4 py-8">
-      <h2 className="text-2xl font-title text-primary text-center mb-3">Snapshots and Custody</h2>
-      <p className="text-center text-muted-foreground text-sm mb-8 px-4">
+    <section className="py-8">
+      <h2 className="text-xl md:text-2xl font-title text-primary text-center mb-3">Snapshots and Custody</h2>
+      <p className="text-center text-muted-foreground text-sm mb-8 max-w-xl mx-auto">
         Monitor Snapshot Events and earn custodian rights of the digital genomic signature of endangered species.
       </p>
       
-      <div className="glass-card rounded-xl p-5 mb-4">
+      <div className="glass-card rounded-xl p-5 md:p-6 max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5 text-muted-foreground" />
@@ -39,16 +39,16 @@ export function SnapshotsCustodySection() {
           </button>
         </div>
         
-        <div className="grid grid-cols-4 gap-2 mb-6">
+        <div className="grid grid-cols-4 gap-2 md:gap-4 mb-6">
           {[
             { value: timeLeft.days, label: 'DAYS' },
             { value: timeLeft.hours, label: 'HOURS' },
             { value: timeLeft.minutes, label: 'MIN' },
             { value: timeLeft.seconds, label: 'SEC' },
           ].map((item) => (
-            <div key={item.label} className="bg-muted/20 border border-border/30 rounded-xl p-3 text-center">
-              <div className="text-3xl font-title text-primary">{item.value}</div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">{item.label}</div>
+            <div key={item.label} className="bg-muted/20 border border-border/30 rounded-xl p-3 md:p-4 text-center">
+              <div className="text-2xl md:text-4xl font-title text-primary">{item.value}</div>
+              <div className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider mt-1">{item.label}</div>
             </div>
           ))}
         </div>
@@ -70,7 +70,7 @@ export function HowSnapshotsWork() {
   const [isOpen, setIsOpen] = useState(false);
   
   return (
-    <section className="container max-w-md mx-auto px-4 pb-4">
+    <section className="pb-4 max-w-2xl mx-auto">
       <div className="glass-card rounded-xl overflow-hidden">
         <button onClick={() => setIsOpen(!isOpen)} className="w-full p-4 flex items-center gap-3 hover:bg-muted/10 transition-colors">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -101,9 +101,9 @@ export function FyreBlindBoxes() {
   const [selectedBox, setSelectedBox] = useState<number | null>(null);
   
   return (
-    <section className="container max-w-md mx-auto px-4 pb-8">
-      <div className="bg-card/80 border border-border/30 rounded-2xl p-5">
-        <div className="flex items-start justify-between mb-4">
+    <section className="pb-8 max-w-2xl mx-auto">
+      <div className="bg-card/80 border border-border/30 rounded-2xl p-5 md:p-6">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
               <Gift className="w-6 h-6 text-primary" />
@@ -119,7 +119,7 @@ export function FyreBlindBoxes() {
         </div>
         
         {/* 2 rows of 5 boxes */}
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-5 gap-2 md:gap-3">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
             <button
               key={num}
@@ -129,9 +129,9 @@ export function FyreBlindBoxes() {
                 selectedBox === num ? "border-primary bg-primary/10" : "border-border/50 bg-muted/20 hover:border-primary/50"
               )}
             >
-              <Package className="w-5 h-5 text-primary mb-0.5" />
-              <span className="text-[9px] text-muted-foreground">#{num}</span>
-              <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-primary text-primary-foreground text-[8px] flex items-center justify-center">?</div>
+              <Package className="w-5 h-5 md:w-6 md:h-6 text-primary mb-0.5" />
+              <span className="text-[9px] md:text-[10px] text-muted-foreground">#{num}</span>
+              <div className="absolute -top-1 -right-1 w-3.5 h-3.5 md:w-4 md:h-4 rounded-full bg-primary text-primary-foreground text-[8px] md:text-[9px] flex items-center justify-center">?</div>
             </button>
           ))}
         </div>
