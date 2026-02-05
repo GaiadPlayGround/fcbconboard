@@ -1,129 +1,140 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Wallet, Moon, Sun } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Flame, Wallet, Sun, Moon, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   fyreKeys?: number;
-  showWallet?: boolean;
+  walletConnected?: boolean;
 }
 
-export function Header({ fyreKeys, showWallet = true }: HeaderProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
+export function Header({ fyreKeys, walletConnected }: HeaderProps) {
   const [isDark, setIsDark] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle('dark');
-  };
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [isDark]);
   
-  const navLinks = [
-    { label: 'Gallery', href: '/' },
-    { label: 'Apps', href: '/apps' },
-    { label: 'Buy', href: '/buy' },
-    { label: 'Links', href: '/links' },
-  ];
+  const isParticipate = location.pathname === '/participate';
   
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/30">
-      <div className="container max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">F</span>
-          </div>
-          <span className="text-lg font-title text-foreground tracking-tight hidden sm:block">FCBC</span>
-        </Link>
-        
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
+    <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/30">
+      <div className="container max-w-6xl mx-auto px-4">
+        <div className="flex items-center justify-between h-14">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-title text-sm">F</span>
+            </div>
+            <span className="font-title text-foreground hidden sm:block">FCBC.fun</span>
+          </Link>
+          
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-6">
+            <a 
+              href="https://fcbc.fun/gallery" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Gallery
+            </a>
+            <Link 
+              to="/participate"
               className={cn(
-                "px-3 py-1.5 text-sm font-cta transition-colors rounded-md",
-                location.pathname === link.href 
-                  ? "text-foreground bg-muted/30" 
-                  : "text-muted-foreground hover:text-foreground"
+                "text-sm transition-colors",
+                isParticipate ? "text-primary" : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {link.label}
+              Participate
             </Link>
-          ))}
-        </nav>
-        
-        {/* Right Side */}
-        <div className="flex items-center gap-2">
-          {/* Theme Toggle */}
-          <button 
-            onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-muted/30 transition-colors"
-          >
-            {isDark ? (
-              <Sun className="w-4 h-4 text-muted-foreground" />
-            ) : (
-              <Moon className="w-4 h-4 text-muted-foreground" />
-            )}
-          </button>
+          </nav>
           
-          {/* Wallet */}
-          {showWallet && (
-            <Button
-              variant="outline"
+          {/* Right Section */}
+          <div className="flex items-center gap-3">
+            {/* Fyre Keys (if on participate page) */}
+            {fyreKeys !== undefined && (
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+                <Flame className="w-4 h-4 text-primary" />
+                <span className="text-sm font-title text-primary">{fyreKeys}</span>
+              </div>
+            )}
+            
+            {/* Wallet Status */}
+            <Button 
+              variant="outline" 
               size="sm"
-              onClick={() => setIsConnected(!isConnected)}
               className={cn(
-                "gap-2 text-xs h-8",
-                isConnected 
-                  ? "bg-success/10 border-success/30 text-success" 
-                  : "bg-muted/20 border-border"
+                "gap-2 h-8",
+                walletConnected 
+                  ? "border-success/30 text-success bg-success/10" 
+                  : "border-border bg-card"
               )}
             >
-              <Wallet className="w-3.5 h-3.5" />
-              {isConnected ? '$ 5 USDC' : 'Connect'}
+              <Wallet className="w-4 h-4" />
+              <span className="hidden sm:inline text-xs">
+                {walletConnected ? 'Connected' : 'Connect'}
+              </span>
             </Button>
-          )}
-          
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-full hover:bg-muted/30 transition-colors"
-          >
-            {isMenuOpen ? (
-              <X className="w-5 h-5 text-foreground" />
-            ) : (
-              <Menu className="w-5 h-5 text-foreground" />
-            )}
-          </button>
+            
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setIsDark(!isDark)}
+              className="p-2 rounded-lg hover:bg-muted/30 transition-colors"
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 text-muted-foreground" />
+              ) : (
+                <Moon className="w-4 h-4 text-muted-foreground" />
+              )}
+            </button>
+            
+            {/* Mobile Menu */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 rounded-lg hover:bg-muted/30 transition-colors md:hidden"
+            >
+              {isMenuOpen ? (
+                <X className="w-5 h-5 text-foreground" />
+              ) : (
+                <Menu className="w-5 h-5 text-foreground" />
+              )}
+            </button>
+          </div>
         </div>
-      </div>
-      
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-background border-b border-border/30 animate-fade-in">
-          <nav className="container max-w-6xl mx-auto px-4 py-4 flex flex-col gap-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
+        
+        {/* Mobile Menu Dropdown */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-border/30 animate-fade-in">
+            <nav className="flex flex-col gap-3">
+              <a 
+                href="https://fcbc.fun/gallery" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
-                className={cn(
-                  "px-4 py-2 text-sm font-cta transition-colors rounded-lg",
-                  location.pathname === link.href 
-                    ? "text-foreground bg-muted/30" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/20"
-                )}
               >
-                {link.label}
+                Gallery
+              </a>
+              <Link 
+                to="/participate"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Participate
               </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+            </nav>
+          </div>
+        )}
+      </div>
     </header>
   );
 }

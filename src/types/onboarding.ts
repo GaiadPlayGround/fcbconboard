@@ -1,5 +1,13 @@
 export type TaskStatus = 'done' | 'active' | 'pending' | 'locked';
 
+export interface SubTask {
+  id: string;
+  title: string;
+  link?: string;
+  completed: boolean;
+  optional?: boolean;
+}
+
 export interface ActionButton {
   label: string;
   action: string;
@@ -9,6 +17,7 @@ export interface Task {
   id: string;
   title: string;
   status: TaskStatus;
+  description?: string;
   hasInfo?: boolean;
   infoText?: string;
   link?: string;
@@ -23,6 +32,10 @@ export interface Task {
   autoVerify?: boolean;
   socialVerify?: boolean;
   linkSubmit?: boolean;
+  actionType?: 'connect_wallet' | 'submit_address' | 'scan_balance' | 'scan_warplette' | 'scan_nft' | 'scan_dna_balance' | 'submit_discord' | 'submit_link';
+  scanAddress?: string;
+  scanCollection?: string;
+  subTasks?: SubTask[];
 }
 
 export interface Chapter {

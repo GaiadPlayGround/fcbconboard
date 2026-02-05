@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Flame, Rocket, PartyPopper, Sparkles, Zap, Trophy, CheckCircle2 } from 'lucide-react';
+import { Flame, Rocket, PartyPopper, Sparkles, Zap, Trophy, CheckCircle2, Shield, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TaskCompletionPopupProps {
@@ -7,6 +7,7 @@ interface TaskCompletionPopupProps {
   taskTitle: string;
   keysEarned: number;
   onClose: () => void;
+  showSafetyTip?: boolean;
 }
 
 const funnyMessages = [
@@ -18,17 +19,17 @@ const funnyMessages = [
   { icon: CheckCircle2, message: "Nailed it! ✅", subtext: "Perfection achieved!" },
 ];
 
-export function TaskCompletionPopup({ isVisible, taskTitle, keysEarned, onClose }: TaskCompletionPopupProps) {
+export function TaskCompletionPopup({ isVisible, taskTitle, keysEarned, onClose, showSafetyTip }: TaskCompletionPopupProps) {
   const [randomMessage] = useState(() => 
     funnyMessages[Math.floor(Math.random() * funnyMessages.length)]
   );
   
   useEffect(() => {
     if (isVisible) {
-      const timer = setTimeout(onClose, 2500);
+      const timer = setTimeout(onClose, showSafetyTip ? 5000 : 2500);
       return () => clearTimeout(timer);
     }
-  }, [isVisible, onClose]);
+  }, [isVisible, onClose, showSafetyTip]);
   
   if (!isVisible) return null;
   
@@ -40,7 +41,7 @@ export function TaskCompletionPopup({ isVisible, taskTitle, keysEarned, onClose 
       onClick={onClose}
     >
       <div 
-        className="glass-card rounded-2xl p-6 text-center animate-scale-in max-w-xs mx-4"
+        className="glass-card rounded-2xl p-6 text-center animate-scale-in max-w-sm mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center animate-bounce">
@@ -54,7 +55,7 @@ export function TaskCompletionPopup({ isVisible, taskTitle, keysEarned, onClose 
           {randomMessage.subtext}
         </p>
         
-        <div className="bg-primary/10 rounded-lg p-3">
+        <div className="bg-primary/10 rounded-lg p-3 mb-4">
           <p className="text-xs text-muted-foreground mb-1 truncate">
             Completed: {taskTitle}
           </p>
@@ -64,9 +65,24 @@ export function TaskCompletionPopup({ isVisible, taskTitle, keysEarned, onClose 
           </div>
         </div>
         
+        {/* Safety Tip - Only show for wallet address submission */}
+        {showSafetyTip && (
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 mb-4 text-left">
+            <div className="flex items-start gap-2">
+              <Shield className="w-4 h-4 text-destructive mt-0.5 shrink-0" />
+              <div>
+                <p className="text-xs font-title text-destructive mb-1">Keep your login safe!</p>
+                <p className="text-[10px] text-muted-foreground">
+                  Never share your seed phrase or private keys. Use hardware wallets for large amounts.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <button
           onClick={onClose}
-          className="mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
           Tap to close
         </button>
