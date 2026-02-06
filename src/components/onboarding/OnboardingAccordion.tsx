@@ -1,10 +1,13 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Chapter, Task, SubTask } from '@/types/onboarding';
 import { initialChapters } from '@/data/onboardingData';
 import { FyreKeyBalance } from './FyreKeyBalance';
 import { TaskCompletionPopup } from './TaskCompletionPopup';
 import { WalletAddressPopup } from './WalletAddressPopup';
+import { SnapshotsCustodySection, HowSnapshotsWork, FyreBlindBoxes } from './SnapshotSections';
+import { EcosystemProductsSection } from './EcosystemProducts';
+import { WarplettTerminal } from './WarplettTerminal';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import CosmicBackground from '@/components/backgrounds/CosmicBackground';
@@ -18,23 +21,107 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
+// Local storage keys
+const STORAGE_KEYS = {
+  fyreKeys: 'fcbc_fyre_keys',
+  claimedChapters: 'fcbc_claimed_chapters',
+  completedBonusTasks: 'fcbc_completed_bonus',
+  subTasksCompleted: 'fcbc_subtasks',
+  walletAddress: 'fcbc_wallet_address',
+  walletConnected: 'fcbc_wallet_connected',
+  discordId: 'fcbc_discord_id',
+  chapters: 'fcbc_chapters',
+};
+
+// Load state from localStorage
+function loadPersistedState<T>(key: string, defaultValue: T): T {
+  try {
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (e) {
+    console.warn(`Failed to load ${key} from localStorage`);
+  }
+  return defaultValue;
+}
+
+// Save state to localStorage
+function persistState(key: string, value: any) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.warn(`Failed to save ${key} to localStorage`);
+  }
+}
+
 export function OnboardingAccordion() {
-  const [chapters, setChapters] = useState<Chapter[]>(initialChapters);
+  // Initialize with persisted state
+  const [chapters, setChapters] = useState<Chapter[]>(() => 
+    loadPersistedState(STORAGE_KEYS.chapters, initialChapters)
+  );
   const [expandedChapter, setExpandedChapter] = useState<number | null>(1);
-  const [fyreKeys, setFyreKeys] = useState(0);
-  const [claimedChapters, setClaimedChapters] = useState<Set<number>>(new Set());
+  const [fyreKeys, setFyreKeys] = useState(() => 
+    loadPersistedState(STORAGE_KEYS.fyreKeys, 0)
+  );
+  const [claimedChapters, setClaimedChapters] = useState<Set<number>>(() => 
+    new Set(loadPersistedState(STORAGE_KEYS.claimedChapters, []))
+  );
   const [animatingKeys, setAnimatingKeys] = useState(false);
-  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [walletAddress, setWalletAddress] = useState<string>(() => 
+    loadPersistedState(STORAGE_KEYS.walletAddress, '')
+  );
   const [showAddressPopup, setShowAddressPopup] = useState(false);
-  const [walletConnected, setWalletConnected] = useState(false);
+  const [walletConnected, setWalletConnected] = useState(() => 
+    loadPersistedState(STORAGE_KEYS.walletConnected, false)
+  );
   const [walletBalance, setWalletBalance] = useState<{ usdc: number; eth: number } | null>(null);
-  const [completedBonusTasks, setCompletedBonusTasks] = useState<Set<string>>(new Set());
-  const [subTasksCompleted, setSubTasksCompleted] = useState<Set<string>>(new Set());
-  const [discordId, setDiscordId] = useState('');
+  const [completedBonusTasks, setCompletedBonusTasks] = useState<Set<string>>(() => 
+    new Set(loadPersistedState(STORAGE_KEYS.completedBonusTasks, []))
+  );
+  const [subTasksCompleted, setSubTasksCompleted] = useState<Set<string>>(() => 
+    new Set(loadPersistedState(STORAGE_KEYS.subTasksCompleted, []))
+  );
+  const [discordId, setDiscordId] = useState(() => 
+    loadPersistedState(STORAGE_KEYS.discordId, '')
+  );
   
   // Popup state
   const [showCompletionPopup, setShowCompletionPopup] = useState(false);
   const [completedTaskInfo, setCompletedTaskInfo] = useState({ title: '', keys: 0, showSafetyTip: false });
+  
+  // Persist state changes
+  useEffect(() => {
+    persistState(STORAGE_KEYS.fyreKeys, fyreKeys);
+  }, [fyreKeys]);
+  
+  useEffect(() => {
+    persistState(STORAGE_KEYS.claimedChapters, Array.from(claimedChapters));
+  }, [claimedChapters]);
+  
+  useEffect(() => {
+    persistState(STORAGE_KEYS.completedBonusTasks, Array.from(completedBonusTasks));
+  }, [completedBonusTasks]);
+  
+  useEffect(() => {
+    persistState(STORAGE_KEYS.subTasksCompleted, Array.from(subTasksCompleted));
+  }, [subTasksCompleted]);
+  
+  useEffect(() => {
+    persistState(STORAGE_KEYS.walletAddress, walletAddress);
+  }, [walletAddress]);
+  
+  useEffect(() => {
+    persistState(STORAGE_KEYS.walletConnected, walletConnected);
+  }, [walletConnected]);
+  
+  useEffect(() => {
+    persistState(STORAGE_KEYS.discordId, discordId);
+  }, [discordId]);
+  
+  useEffect(() => {
+    persistState(STORAGE_KEYS.chapters, chapters);
+  }, [chapters]);
   
   const handleToggle = useCallback((chapterId: number) => {
     const chapter = chapters.find(c => c.id === chapterId);
@@ -313,6 +400,26 @@ export function OnboardingAccordion() {
               </ul>
             </div>
           </aside>
+        </div>
+        
+        {/* Additional Sections */}
+        <div className="mt-12 space-y-6">
+          {/* Warplette Terminal */}
+          <div className="max-w-2xl mx-auto">
+            <WarplettTerminal />
+          </div>
+          
+          {/* Snapshots and Custody */}
+          <SnapshotsCustodySection />
+          
+          {/* How Snapshots Work */}
+          <HowSnapshotsWork />
+          
+          {/* Fyre Blindboxes */}
+          <FyreBlindBoxes />
+          
+          {/* Ecosystem Products */}
+          <EcosystemProductsSection />
         </div>
       </main>
       

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Clock, History, HelpCircle, TrendingUp, Users, ChevronDown, ChevronUp, Sparkles, ExternalLink } from 'lucide-react';
+import { ArrowRight, Clock, History, HelpCircle, TrendingUp, Users, Sparkles, ExternalLink, MessageSquare } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
+import { WarplettTerminal } from '@/components/onboarding/WarplettTerminal';
+import Galaxy from '@/components/backgrounds/Galaxy';
 import CosmicBackground from '@/components/backgrounds/CosmicBackground';
 import { cn } from '@/lib/utils';
 
@@ -49,7 +51,7 @@ const howItWorks = [
   },
 ];
 
-const fyreAppsData = [
+const ecosystemProducts = [
   { 
     id: 0,
     name: 'Fyre Docs', 
@@ -92,6 +94,13 @@ const fyreAppsData = [
     status: 'coming',
     description: 'Competitive layer with free-to-high-stakes contests—hybrid showcases, tournaments, PvP battles, death matches. Play as breeder or earn as spectator via predictions.',
   },
+  {
+    id: 6,
+    name: 'Fyre DEX',
+    subtitle: 'Bio-RWA Exchange',
+    status: 'coming',
+    description: 'Uniswap-style exchange exclusively for bio-RWAs on Base. Earn 5x the Fyre Keys rewards and contest for weekly prizes.',
+  },
 ];
 
 const communityApps = [
@@ -100,6 +109,12 @@ const communityApps = [
     builder: 'HawkNode',
     status: 'live',
     description: 'Ecosystem intelligence hub for announcements, roadmap updates, events, and what\'s next.',
+  },
+  {
+    name: 'Fyre DEX',
+    builder: 'JariusOS',
+    status: 'coming',
+    description: 'Uniswap-style exchange exclusively for bio-RWAs on Base. Earn 5x the Fyre Keys rewards and contest for weekly prizes.',
   },
 ];
 
@@ -111,193 +126,293 @@ const statusColors: Record<string, string> = {
 };
 
 export default function Home() {
-  const [expandedApp, setExpandedApp] = useState<number | null>(null);
+  const [selectedProductIndex, setSelectedProductIndex] = useState(0);
+  const selectedProduct = ecosystemProducts[selectedProductIndex];
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
-      <CosmicBackground starCount={80} />
-      
       <Header />
       
-      <main className="pt-20 pb-12 relative z-10">
-        <div className="container max-w-6xl mx-auto px-4">
-          {/* Hero Section */}
-          <section className="text-center py-16 md:py-24">
-            <p className="text-xs md:text-sm tracking-[0.25em] text-muted-foreground uppercase mb-6">
-              A BASE ORIGINAL
-            </p>
-            <h1 className="text-2xl md:text-4xl lg:text-5xl font-title text-foreground leading-tight mb-6">
-              OPEN ATTENTION MARKETS<br />
-              FOR ENDANGERED SPECIES.
-            </h1>
-            <p className="text-muted-foreground text-sm md:text-base max-w-lg mx-auto mb-10">
-              DNA-based bio-digital resources for community-driven IP generation on Base.
-            </p>
-            
-            {/* CTAs */}
-            <div className="flex flex-row items-center justify-center gap-4 mb-12">
-              <a href="https://fcbc.fun/gallery" target="_blank" rel="noopener noreferrer">
-                <Button 
-                  variant="outline" 
-                  className="gap-2 px-8 py-3 h-12 text-sm font-cta border-foreground/20 bg-card/50 hover:bg-card text-foreground"
-                >
-                  EXPLORE GALLERY
-                </Button>
-              </a>
-              <Link to="/participate">
-                <Button 
-                  className="gap-2 px-8 py-3 h-12 text-sm font-cta bg-card/80 hover:bg-card border border-foreground/20 text-foreground"
-                >
-                  JOIN CLUB
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-            </div>
-          </section>
+      <main className="relative z-10">
+        {/* Hero Section with Galaxy Background */}
+        <section className="relative min-h-screen flex flex-col">
+          {/* Galaxy Background - Only for hero section */}
+          <div className="absolute inset-0 z-0">
+            <Galaxy 
+              mouseRepulsion
+              mouseInteraction
+              density={1.9}
+              glowIntensity={0.3}
+              saturation={0.3}
+              hueShift={300}
+              twinkleIntensity={0}
+              rotationSpeed={0.05}
+              repulsionStrength={0.5}
+              autoCenterRepulsion={0}
+              starSpeed={0.3}
+              speed={0.6}
+            />
+          </div>
           
-          {/* Stats Announcement Bar */}
-          <div className="relative mb-12">
-            <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12 py-4">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl md:text-3xl font-title text-foreground">234</span>
-                <span className="text-xs text-muted-foreground uppercase">Markets</span>
+          <div className="container max-w-6xl mx-auto px-4 pt-28 pb-8 relative z-10 flex-1 flex flex-col">
+            {/* Hero Content */}
+            <div className="text-center flex-1 flex flex-col justify-center">
+              <p className="text-xs md:text-sm tracking-[0.25em] text-muted-foreground uppercase mb-6">
+                A BASE ORIGINAL
+              </p>
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-title text-foreground leading-tight mb-6">
+                OPEN ATTENTION MARKETS<br />
+                FOR ENDANGERED SPECIES.
+              </h1>
+              <p className="text-muted-foreground text-sm md:text-base max-w-lg mx-auto mb-10">
+                DNA-based bio-digital resources for community-driven IP generation on Base.
+              </p>
+              
+              {/* Warplette Terminal */}
+              <div className="max-w-2xl mx-auto w-full mb-8">
+                <WarplettTerminal />
               </div>
-              <div className="w-px h-6 bg-border hidden md:block" />
-              <div className="flex items-center gap-2">
-                <span className="text-2xl md:text-3xl font-title text-foreground">362,782</span>
-                <span className="text-xs text-muted-foreground uppercase">Base Squares</span>
+              
+              {/* CTAs */}
+              <div className="flex flex-row items-center justify-center gap-4 mb-12">
+                <a href="https://fcbc.fun/gallery" target="_blank" rel="noopener noreferrer">
+                  <Button 
+                    variant="outline" 
+                    className="gap-2 px-8 py-3 h-12 text-sm font-cta border-foreground/20 bg-card/50 hover:bg-card text-foreground"
+                  >
+                    EXPLORE GALLERY
+                  </Button>
+                </a>
+                <Link to="/participate">
+                  <Button 
+                    className="gap-2 px-8 py-3 h-12 text-sm font-cta bg-card/80 hover:bg-card border border-foreground/20 text-foreground"
+                  >
+                    JOIN CLUB
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
               </div>
-              <div className="w-px h-6 bg-border hidden md:block" />
-              <div className="flex items-center gap-2">
-                <span className="text-2xl md:text-3xl font-title text-primary">$72M</span>
-                <span className="text-xs text-muted-foreground uppercase">Market Cap</span>
+            </div>
+            
+            {/* Stats Announcement Bar - End of Galaxy section */}
+            <div className="relative py-6 border-t border-b border-border/30">
+              <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl md:text-3xl font-title text-foreground">234</span>
+                  <span className="text-xs text-muted-foreground uppercase">Markets</span>
+                </div>
+                <div className="w-px h-6 bg-border hidden md:block" />
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl md:text-3xl font-title text-foreground">362,782</span>
+                  <span className="text-xs text-muted-foreground uppercase">Base Squares</span>
+                </div>
+                <div className="w-px h-6 bg-border hidden md:block" />
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl md:text-3xl font-title text-primary">$72M</span>
+                  <span className="text-xs text-muted-foreground uppercase">Market Cap</span>
+                </div>
               </div>
             </div>
           </div>
+        </section>
+        
+        {/* Rest of content with CosmicBackground */}
+        <div className="relative">
+          <CosmicBackground starCount={60} />
           
-          {/* Featured Purebreeds - Double Row Marquee */}
-          <section className="py-8">
-            <h2 className="text-sm font-title text-muted-foreground uppercase tracking-wider mb-6">
-              Featured Purebreeds
-            </h2>
-            
-            {/* Marquee Row 1 */}
-            <div className="relative overflow-hidden mb-4">
-              <div className="flex gap-4 animate-marquee">
-                {[...featuredPurebreeds.slice(0, 5), ...featuredPurebreeds.slice(0, 5)].map((item, index) => (
-                  <PurebreedCard key={`row1-${item.id}-${index}`} item={item} />
-                ))}
-              </div>
-            </div>
-            
-            {/* Marquee Row 2 - Reverse direction */}
-            <div className="relative overflow-hidden">
-              <div className="flex gap-4 animate-marquee-reverse">
-                {[...featuredPurebreeds.slice(5, 10), ...featuredPurebreeds.slice(5, 10)].map((item, index) => (
-                  <PurebreedCard key={`row2-${item.id}-${index}`} item={item} />
-                ))}
-              </div>
-            </div>
-          </section>
-          
-          {/* How DNA Markets Work */}
-          <section className="py-8">
-            <h2 className="text-sm font-title text-muted-foreground uppercase tracking-wider mb-6">
-              How DNA Markets <span className="text-foreground">Work</span>
-            </h2>
-            
-            <div className="grid grid-cols-2 gap-3 md:gap-4">
-              {howItWorks.map((item, index) => (
-                <div 
-                  key={index}
-                  className="glass-card rounded-xl p-4 md:p-5 group hover:border-primary/30 transition-colors"
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-sm font-title text-foreground">
-                      {item.title.replace(item.highlight, '')}
-                      <span className="text-primary">{item.highlight}</span>
-                    </h3>
-                    <span className="text-lg">{item.icon}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
+          <div className="container max-w-6xl mx-auto px-4 relative z-10">
+            {/* Featured Purebreeds - Double Row Marquee */}
+            <section className="py-12">
+              <h2 className="text-sm font-title text-muted-foreground uppercase tracking-wider mb-6">
+                Featured Purebreeds
+              </h2>
+              
+              {/* Marquee Row 1 */}
+              <div className="relative overflow-hidden mb-4">
+                <div className="flex gap-4 animate-marquee">
+                  {[...featuredPurebreeds.slice(0, 5), ...featuredPurebreeds.slice(0, 5)].map((item, index) => (
+                    <PurebreedCard key={`row1-${item.id}-${index}`} item={item} />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+              
+              {/* Marquee Row 2 - Reverse direction */}
+              <div className="relative overflow-hidden">
+                <div className="flex gap-4 animate-marquee-reverse">
+                  {[...featuredPurebreeds.slice(5, 10), ...featuredPurebreeds.slice(5, 10)].map((item, index) => (
+                    <PurebreedCard key={`row2-${item.id}-${index}`} item={item} />
+                  ))}
+                </div>
+              </div>
+            </section>
             
-            <div className="flex justify-center mt-8">
-              <Link to="/participate">
-                <Button className="bg-card border border-foreground/20 hover:bg-card/80 text-foreground px-12 py-3 h-12 font-cta">
-                  BEGIN
-                </Button>
-              </Link>
-            </div>
-          </section>
-          
-          {/* Snapshots and Custody */}
-          <SnapshotsAndCustodySection />
-          
-          {/* FyreApps Spotlight */}
-          <section className="py-8">
-            <h2 className="text-sm font-title text-muted-foreground uppercase tracking-wider mb-6">
-              FyreApps
-            </h2>
-            
-            <div className="space-y-3 mb-6">
-              {fyreAppsData.map((app) => (
-                <FyreAppCard 
-                  key={app.id} 
-                  app={app} 
-                  isExpanded={expandedApp === app.id}
-                  onToggle={() => setExpandedApp(expandedApp === app.id ? null : app.id)}
-                />
-              ))}
-            </div>
-            
-            {/* Community Apps */}
-            <h3 className="text-xs font-title text-muted-foreground uppercase tracking-wider mb-3 mt-8">
-              Community FyreApps
-            </h3>
-            <div className="space-y-3 mb-6">
-              {communityApps.map((app, index) => (
-                <div 
-                  key={index}
-                  className="glass-card rounded-xl p-4 flex items-center justify-between"
-                >
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-title text-foreground">{app.name}</span>
-                      <span className="text-xs text-muted-foreground">by {app.builder}</span>
-                      <span className={cn(
-                        "px-2 py-0.5 rounded-full text-[10px] font-medium uppercase",
-                        statusColors[app.status]
-                      )}>
-                        {app.status}
-                      </span>
+            {/* How DNA Markets Work */}
+            <section className="py-8">
+              <h2 className="text-sm font-title text-muted-foreground uppercase tracking-wider mb-6">
+                How DNA Markets <span className="text-foreground">Work</span>
+              </h2>
+              
+              <div className="grid grid-cols-2 gap-3 md:gap-4">
+                {howItWorks.map((item, index) => (
+                  <div 
+                    key={index}
+                    className="glass-card rounded-xl p-4 md:p-5 group hover:border-primary/30 transition-colors"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-sm font-title text-foreground">
+                        {item.title.replace(item.highlight, '')}
+                        <span className="text-primary">{item.highlight}</span>
+                      </h3>
+                      <span className="text-lg">{item.icon}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground">{app.description}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
                   </div>
-                  <Button size="sm" variant="outline" className="text-xs shrink-0">
-                    View
+                ))}
+              </div>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+                <a 
+                  href="https://00.fcbc.fun/get-started" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="outline" className="gap-2 px-8 py-3 h-12 font-cta">
+                    <MessageSquare className="w-4 h-4" />
+                    Ask Warplette
                   </Button>
-                </div>
-              ))}
-            </div>
+                </a>
+                <Link to="/participate">
+                  <Button className="bg-card border border-foreground/20 hover:bg-card/80 text-foreground px-12 py-3 h-12 font-cta">
+                    BEGIN
+                  </Button>
+                </Link>
+              </div>
+            </section>
             
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="w-full gap-2 bg-muted/20 border-border/50 hover:bg-primary/10 hover:border-primary/30"
-            >
-              + Apply as a FyreApp/FyreGame builder
-            </Button>
-          </section>
-          
-          {/* Fyre PureBreed Index */}
-          <FyrePureBreedIndex />
-          
-          <p className="text-center text-xs text-muted-foreground mt-12">
-            DNA Markets is the first onchain genetic ecosystem for bio RWAs.
-          </p>
+            {/* Snapshots and Custody */}
+            <SnapshotsAndCustodySection />
+            
+            {/* Ecosystem Products - Single Card with Navigation */}
+            <section className="py-8">
+              <h2 className="text-sm font-title text-muted-foreground uppercase tracking-wider mb-6">
+                Ecosystem Products
+              </h2>
+              
+              <div className="glass-card rounded-2xl overflow-hidden">
+                <div className="p-5 md:p-6">
+                  {/* Official Badge */}
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs">
+                      <Sparkles className="w-3 h-3" />
+                      OFFICIAL
+                    </span>
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full text-[10px] font-medium uppercase",
+                      statusColors[selectedProduct.status]
+                    )}>
+                      {selectedProduct.status}
+                    </span>
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 className="text-xl md:text-2xl font-title text-foreground mb-1">FyreApp {selectedProduct.id}</h3>
+                  <a href="#" className="text-base text-primary hover:underline mb-2 block">{selectedProduct.name}</a>
+                  <p className="text-sm text-muted-foreground mb-1">{selectedProduct.subtitle}</p>
+                  
+                  {/* Description */}
+                  <p className="text-sm text-muted-foreground mt-4 mb-6 leading-relaxed">
+                    {selectedProduct.description}
+                  </p>
+                  
+                  {/* CTA and Tags */}
+                  <div className="flex items-center gap-3 mb-6">
+                    <Button 
+                      className={cn(
+                        "flex-1 gap-2",
+                        selectedProduct.status === 'coming' 
+                          ? "bg-muted text-muted-foreground cursor-not-allowed" 
+                          : "bg-primary hover:bg-primary/90 text-primary-foreground"
+                      )}
+                      disabled={selectedProduct.status === 'coming'}
+                    >
+                      {selectedProduct.status === 'coming' ? 'Coming Soon' : 'View'}
+                      {selectedProduct.status !== 'coming' && <ExternalLink className="w-4 h-4" />}
+                    </Button>
+                    <span className="px-3 py-2 rounded-lg bg-muted/50 text-sm text-muted-foreground">Base</span>
+                    <span className="px-3 py-2 rounded-lg bg-muted/50 text-sm text-muted-foreground">FC</span>
+                  </div>
+                  
+                  {/* Level Dots - Navigation */}
+                  <div className="flex items-center justify-center gap-2">
+                    {ecosystemProducts.slice(0, 7).map((_, index) => (
+                      <button 
+                        key={index}
+                        onClick={() => setSelectedProductIndex(index)}
+                        className={cn(
+                          "w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs md:text-sm font-title border transition-all",
+                          index === selectedProductIndex 
+                            ? "bg-primary text-primary-foreground border-primary" 
+                            : "bg-muted/30 text-muted-foreground border-border/50 hover:bg-muted/50"
+                        )}
+                      >
+                        {index}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Community Apps */}
+              <h3 className="text-xs font-title text-muted-foreground uppercase tracking-wider mb-3 mt-8">
+                Community FyreApps
+              </h3>
+              <div className="space-y-3 mb-6">
+                {communityApps.map((app, index) => (
+                  <div 
+                    key={index}
+                    className="glass-card rounded-xl p-4 flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-title text-foreground">{app.name}</span>
+                        <span className="text-xs text-muted-foreground">by {app.builder}</span>
+                        <span className={cn(
+                          "px-2 py-0.5 rounded-full text-[10px] font-medium uppercase",
+                          statusColors[app.status]
+                        )}>
+                          {app.status}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{app.description}</p>
+                    </div>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="text-xs shrink-0"
+                      disabled={app.status === 'coming'}
+                    >
+                      {app.status === 'coming' ? 'Soon' : 'View'}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full gap-2 bg-muted/20 border-border/50 hover:bg-primary/10 hover:border-primary/30"
+              >
+                + Apply as a FyreApp/FyreGame builder
+              </Button>
+            </section>
+            
+            {/* Fyre PureBreed Index - Centralized */}
+            <FyrePureBreedIndex />
+            
+            <p className="text-center text-xs text-muted-foreground mt-12 pb-12">
+              DNA Markets is the first onchain genetic ecosystem for bio RWAs.
+            </p>
+          </div>
         </div>
       </main>
       
@@ -344,70 +459,6 @@ function PurebreedCard({ item }: { item: typeof featuredPurebreeds[0] }) {
   );
 }
 
-function FyreAppCard({ app, isExpanded, onToggle }: { 
-  app: typeof fyreAppsData[0]; 
-  isExpanded: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <div className="glass-card rounded-xl overflow-hidden">
-      <div className="p-4">
-        {/* Official Badge */}
-        <div className="flex items-center gap-2 mb-3">
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs">
-            <Sparkles className="w-3 h-3" />
-            OFFICIAL
-          </span>
-        </div>
-        
-        {/* Title */}
-        <h3 className="text-lg font-title text-foreground mb-0.5">FyreApp {app.id}</h3>
-        <a href="#" className="text-sm text-primary hover:underline mb-3 block">{app.name}</a>
-        
-        {/* Description */}
-        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-          {app.description}
-        </p>
-        
-        {/* CTA and Tags */}
-        <div className="flex items-center gap-3 mb-4">
-          <Button 
-            className={cn(
-              "flex-1 gap-2",
-              app.status === 'coming' 
-                ? "bg-muted text-muted-foreground cursor-not-allowed" 
-                : "bg-primary hover:bg-primary/90 text-primary-foreground"
-            )}
-            disabled={app.status === 'coming'}
-          >
-            View
-            <ExternalLink className="w-4 h-4" />
-          </Button>
-          <span className="px-3 py-2 rounded-lg bg-muted/50 text-sm text-muted-foreground">Base</span>
-          <span className="px-3 py-2 rounded-lg bg-muted/50 text-sm text-muted-foreground">FC</span>
-        </div>
-        
-        {/* Level Dots */}
-        <div className="flex items-center justify-center gap-2">
-          {[0, 1, 2, 3, 4, 5, 6].map((level) => (
-            <span 
-              key={level}
-              className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-title border",
-                level === app.id 
-                  ? "bg-primary text-primary-foreground border-primary" 
-                  : "bg-muted/30 text-muted-foreground border-border/50"
-              )}
-            >
-              {level}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function SnapshotsAndCustodySection() {
   const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 14, minutes: 30, seconds: 4 });
   
@@ -430,16 +481,20 @@ function SnapshotsAndCustodySection() {
     <section className="py-8">
       <div className="glass-card rounded-2xl p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <Clock className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm font-title text-foreground uppercase tracking-wide">
-              Epoch 1 Ends In
-            </span>
-          </div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-title text-primary uppercase tracking-wider">
+            Custody Hunting
+          </h3>
           <button className="p-2 rounded-full hover:bg-muted/30 transition-colors">
             <History className="w-4 h-4 text-muted-foreground" />
           </button>
+        </div>
+        
+        <div className="flex items-center gap-2 mb-6">
+          <Clock className="w-5 h-5 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">
+            Next Snapshot In
+          </span>
         </div>
         
         {/* Countdown Timer */}
@@ -463,7 +518,7 @@ function SnapshotsAndCustodySection() {
         
         {/* Last Week Snapshots */}
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="text-sm text-muted-foreground">Last week Snapshots:</span>
+          <span className="text-sm text-muted-foreground">Last Snapshot Signals:</span>
           {snapshotTokens.map((token) => (
             <span 
               key={token}
@@ -489,20 +544,20 @@ function FyrePureBreedIndex() {
   
   return (
     <section className="py-8">
-      <h2 className="text-sm font-title uppercase tracking-wider mb-4">
-        <span className="text-foreground">Fyre</span>{' '}
-        <span className="text-primary">PureBreed</span>{' '}
-        <span className="text-foreground">Index</span>
-      </h2>
-      
-      <div className="glass-card rounded-2xl p-6 md:p-8">
-        <div className="flex items-center justify-between mb-2">
+      <div className="glass-card rounded-2xl p-6 md:p-8 text-center">
+        <h2 className="text-sm font-title uppercase tracking-wider mb-6">
+          <span className="text-foreground">Fyre</span>{' '}
+          <span className="text-primary">PureBreed</span>{' '}
+          <span className="text-foreground">Index</span>
+        </h2>
+        
+        <div className="flex items-center justify-center gap-2 mb-2">
           <p className="text-sm text-muted-foreground">Total Ecosystem Value</p>
           <button 
             onClick={() => setShowInfo(!showInfo)}
-            className="p-2 rounded-full hover:bg-muted/30 transition-colors"
+            className="p-1 rounded-full hover:bg-muted/30 transition-colors"
           >
-            <HelpCircle className="w-5 h-5 text-muted-foreground" />
+            <HelpCircle className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
         
@@ -510,14 +565,14 @@ function FyrePureBreedIndex() {
           271992.281 <span className="text-primary">DNA</span>
         </div>
         
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center justify-center gap-2 text-sm">
           <span className="text-success">+72%</span>
           <span className="text-muted-foreground">last 24 hours</span>
         </div>
         
         {showInfo && (
-          <div className="mt-4 p-4 rounded-lg bg-muted/20 animate-fade-in">
-            <p className="text-sm text-muted-foreground">
+          <div className="mt-4 p-4 rounded-lg bg-muted/20 animate-fade-in max-w-lg mx-auto">
+            <p className="text-sm text-muted-foreground text-left">
               <strong className="text-foreground">How it's calculated:</strong> The Fyre PureBreed Index 
               aggregates the total market value of all active DNA tokens, weighted by Base Square 
               assignments and custody participation rates across all 234 species markets.
