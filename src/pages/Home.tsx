@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Clock, History, HelpCircle, TrendingUp, Users, Sparkles, ExternalLink, MessageSquare } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, Clock, History, HelpCircle, TrendingUp, Users, Sparkles, ExternalLink, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,19 @@ const featuredPurebreeds = [
   { id: 8, name: 'Komodo Dragon', status: 'ENDANGERED', baseSquares: 34210, mcap: '$980K', holders: 567 },
   { id: 9, name: 'Hawksbill Turtle', status: 'CRITICALLY', baseSquares: 28940, mcap: '$750K', holders: 445 },
   { id: 10, name: 'Red Panda', status: 'ENDANGERED', baseSquares: 67890, mcap: '$1.6M', holders: 912 },
+  { id: 11, name: 'Sumatran Rhino', status: 'CRITICALLY', baseSquares: 18450, mcap: '$520K', holders: 312 },
+  { id: 12, name: 'Mountain Gorilla', status: 'ENDANGERED', baseSquares: 112340, mcap: '$2.9M', holders: 1567 },
+  { id: 13, name: 'Sea Otter', status: 'ENDANGERED', baseSquares: 42300, mcap: '$1.1M', holders: 698 },
+  { id: 14, name: 'Bengal Tiger', status: 'ENDANGERED', baseSquares: 89100, mcap: '$2.2M', holders: 1123 },
+];
+
+const marqueeStats = [
+  { label: 'Markets', value: '234' },
+  { label: 'Total Base Squares', value: '362,782' },
+  { label: 'Market Cap', value: '$72M' },
+  { label: 'Total Holders', value: '1501' },
+  { label: 'Fyre Custodians', value: '0' },
+  { label: 'Fyre PureBreed Index', value: '6290151' },
 ];
 
 const howItWorks = [
@@ -128,6 +141,22 @@ const statusColors: Record<string, string> = {
 export default function Home() {
   const [selectedProductIndex, setSelectedProductIndex] = useState(0);
   const selectedProduct = ecosystemProducts[selectedProductIndex];
+  const [eli5Mode, setEli5Mode] = useState(false);
+  const navigate = useNavigate();
+  
+  const row1Ref = useRef<HTMLDivElement>(null);
+  const row2Ref = useRef<HTMLDivElement>(null);
+
+  const scrollMarquee = (ref: React.RefObject<HTMLDivElement>, direction: 'left' | 'right') => {
+    if (ref.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      ref.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  const handleViewHint = () => {
+    navigate('/participate#custody-hunting');
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
@@ -135,7 +164,7 @@ export default function Home() {
       
       <main className="relative z-10">
         {/* Hero Section with Galaxy Background */}
-        <section className="relative min-h-screen flex flex-col">
+        <section className="relative min-h-[100svh] flex flex-col">
           {/* Galaxy Background - Only for hero section */}
           <div className="absolute inset-0 z-0">
             <Galaxy 
@@ -154,63 +183,87 @@ export default function Home() {
             />
           </div>
           
-          <div className="container max-w-6xl mx-auto px-4 pt-28 pb-8 relative z-10 flex-1 flex flex-col">
+          <div className="container max-w-6xl mx-auto px-4 pt-24 md:pt-28 pb-4 relative z-10 flex-1 flex flex-col">
             {/* Hero Content */}
             <div className="text-center flex-1 flex flex-col justify-center">
-              <p className="text-xs md:text-sm tracking-[0.25em] text-muted-foreground uppercase mb-6">
+              <p className="text-xs md:text-sm tracking-[0.25em] text-muted-foreground uppercase mb-4 md:mb-6">
                 A BASE ORIGINAL
               </p>
-              <h1 className="text-2xl md:text-4xl lg:text-5xl font-title text-foreground leading-tight mb-6">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-title text-foreground leading-tight mb-4 md:mb-6">
                 OPEN ATTENTION MARKETS<br />
                 FOR ENDANGERED SPECIES.
               </h1>
-              <p className="text-muted-foreground text-sm md:text-base max-w-lg mx-auto mb-10">
-                DNA-based bio-digital resources for community-driven IP generation on Base.
-              </p>
+              
+              {/* Subcaption with ELI5 toggle */}
+              <div className="relative max-w-lg mx-auto mb-6 md:mb-8">
+                <p className="text-muted-foreground text-sm md:text-base pr-12">
+                  {eli5Mode 
+                    ? "Holders of DNA tokens can combine different species to create original, CCO collectibles for art and GameFi"
+                    : "DNA-based bio-digital resources for community-driven IP generation on Base."
+                  }
+                </p>
+                <button
+                  onClick={() => setEli5Mode(!eli5Mode)}
+                  className={cn(
+                    "absolute right-0 top-0 px-2 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all",
+                    eli5Mode 
+                      ? "bg-primary/20 text-primary border border-primary/30" 
+                      : "bg-muted/30 text-muted-foreground border border-border/50 hover:bg-muted/50"
+                  )}
+                >
+                  eli5
+                </button>
+              </div>
               
               {/* Warplette Terminal */}
-              <div className="max-w-2xl mx-auto w-full mb-8">
+              <div className="max-w-2xl mx-auto w-full mb-6 md:mb-8">
                 <WarplettTerminal />
               </div>
               
               {/* CTAs */}
-              <div className="flex flex-row items-center justify-center gap-4 mb-12">
+              <div className="flex flex-row items-center justify-center gap-3 md:gap-4 mb-6 md:mb-8">
                 <a href="https://fcbc.fun/gallery" target="_blank" rel="noopener noreferrer">
                   <Button 
-                    variant="outline" 
-                    className="gap-2 px-8 py-3 h-12 text-sm font-cta border-foreground/20 bg-card/50 hover:bg-card text-foreground"
+                    variant="ghost" 
+                    className="gap-2 px-6 md:px-8 py-3 h-11 md:h-12 text-sm font-cta border border-border/30 hover:bg-muted/20 text-foreground"
                   >
                     EXPLORE GALLERY
                   </Button>
                 </a>
+                <a 
+                  href="https://00.fcbc.fun/get-started" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Button 
+                    variant="ghost"
+                    className="gap-2 px-6 md:px-8 py-3 h-11 md:h-12 text-sm font-cta border border-border/30 hover:bg-muted/20 text-foreground"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Ask Warplette
+                  </Button>
+                </a>
                 <Link to="/participate">
                   <Button 
-                    className="gap-2 px-8 py-3 h-12 text-sm font-cta bg-card/80 hover:bg-card border border-foreground/20 text-foreground"
+                    className="gap-2 px-8 md:px-12 py-3 h-11 md:h-12 text-sm font-cta bg-primary hover:bg-primary/90 text-primary-foreground animate-rainbow-glow"
                   >
-                    JOIN CLUB
+                    BEGIN
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
               </div>
             </div>
             
-            {/* Stats Announcement Bar - End of Galaxy section */}
-            <div className="relative py-6 border-t border-b border-border/30">
-              <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl md:text-3xl font-title text-foreground">234</span>
-                  <span className="text-xs text-muted-foreground uppercase">Markets</span>
-                </div>
-                <div className="w-px h-6 bg-border hidden md:block" />
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl md:text-3xl font-title text-foreground">362,782</span>
-                  <span className="text-xs text-muted-foreground uppercase">Base Squares</span>
-                </div>
-                <div className="w-px h-6 bg-border hidden md:block" />
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl md:text-3xl font-title text-primary">$72M</span>
-                  <span className="text-xs text-muted-foreground uppercase">Market Cap</span>
-                </div>
+            {/* Stats Marquee Bar - End of Galaxy section */}
+            <div className="relative py-4 border-t border-b border-border/30 overflow-hidden">
+              <div className="flex animate-marquee whitespace-nowrap">
+                {[...marqueeStats, ...marqueeStats].map((stat, index) => (
+                  <div key={index} className="flex items-center gap-2 mx-4 md:mx-6">
+                    <span className="text-lg md:text-2xl font-title text-foreground">{stat.value}</span>
+                    <span className="text-xs text-muted-foreground uppercase">{stat.label}</span>
+                    <span className="text-muted-foreground/30 mx-2">·</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -221,35 +274,67 @@ export default function Home() {
           <CosmicBackground starCount={60} />
           
           <div className="container max-w-6xl mx-auto px-4 relative z-10">
-            {/* Featured Purebreeds - Double Row Marquee */}
-            <section className="py-12">
-              <h2 className="text-sm font-title text-muted-foreground uppercase tracking-wider mb-6">
-                Featured Purebreeds
+            {/* Featured Purebreeds - Double Row Marquee with Manual Swipe */}
+            <section className="py-8 md:py-12">
+              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mb-4 md:mb-6">
+                Featured <span className="text-primary">PureBreeds</span>
               </h2>
               
-              {/* Marquee Row 1 */}
-              <div className="relative overflow-hidden mb-4">
-                <div className="flex gap-4 animate-marquee">
-                  {[...featuredPurebreeds.slice(0, 5), ...featuredPurebreeds.slice(0, 5)].map((item, index) => (
-                    <PurebreedCard key={`row1-${item.id}-${index}`} item={item} />
+              {/* Row 1 - 7 species */}
+              <div className="relative mb-4">
+                <button 
+                  onClick={() => scrollMarquee(row1Ref, 'left')}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <div 
+                  ref={row1Ref}
+                  className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {featuredPurebreeds.slice(0, 7).map((item) => (
+                    <PurebreedCard key={`row1-${item.id}`} item={item} />
                   ))}
                 </div>
+                <button 
+                  onClick={() => scrollMarquee(row1Ref, 'right')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
               
-              {/* Marquee Row 2 - Reverse direction */}
-              <div className="relative overflow-hidden">
-                <div className="flex gap-4 animate-marquee-reverse">
-                  {[...featuredPurebreeds.slice(5, 10), ...featuredPurebreeds.slice(5, 10)].map((item, index) => (
-                    <PurebreedCard key={`row2-${item.id}-${index}`} item={item} />
+              {/* Row 2 - 7 species */}
+              <div className="relative">
+                <button 
+                  onClick={() => scrollMarquee(row2Ref, 'left')}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <div 
+                  ref={row2Ref}
+                  className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {featuredPurebreeds.slice(7, 14).map((item) => (
+                    <PurebreedCard key={`row2-${item.id}`} item={item} />
                   ))}
                 </div>
+                <button 
+                  onClick={() => scrollMarquee(row2Ref, 'right')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
             </section>
             
             {/* How DNA Markets Work */}
             <section className="py-8">
-              <h2 className="text-sm font-title text-muted-foreground uppercase tracking-wider mb-6">
-                How DNA Markets <span className="text-foreground">Work</span>
+              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mb-4 md:mb-6">
+                How DNA Markets <span className="text-primary">Work</span>
               </h2>
               
               <div className="grid grid-cols-2 gap-3 md:gap-4">
@@ -276,26 +361,31 @@ export default function Home() {
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
-                  <Button variant="outline" className="gap-2 px-8 py-3 h-12 font-cta">
+                  <Button variant="ghost" className="gap-2 px-6 md:px-8 py-3 h-11 md:h-12 font-cta border border-border/30 hover:bg-muted/20">
                     <MessageSquare className="w-4 h-4" />
                     Ask Warplette
                   </Button>
                 </a>
                 <Link to="/participate">
-                  <Button className="bg-card border border-foreground/20 hover:bg-card/80 text-foreground px-12 py-3 h-12 font-cta">
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 md:px-12 py-3 h-11 md:h-12 font-cta animate-rainbow-glow">
                     BEGIN
                   </Button>
                 </Link>
               </div>
             </section>
             
-            {/* Snapshots and Custody */}
-            <SnapshotsAndCustodySection />
+            {/* Custody Hunting */}
+            <section id="custody-hunting" className="py-8">
+              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mb-4 md:mb-6">
+                Custody <span className="text-primary">Hunting</span>
+              </h2>
+              <SnapshotsAndCustodySection onViewHint={handleViewHint} />
+            </section>
             
             {/* Ecosystem Products - Single Card with Navigation */}
             <section className="py-8">
-              <h2 className="text-sm font-title text-muted-foreground uppercase tracking-wider mb-6">
-                Ecosystem Products
+              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mb-4 md:mb-6">
+                Ecosystem <span className="text-primary">Products</span>
               </h2>
               
               <div className="glass-card rounded-2xl overflow-hidden">
@@ -338,8 +428,12 @@ export default function Home() {
                       {selectedProduct.status === 'coming' ? 'Coming Soon' : 'View'}
                       {selectedProduct.status !== 'coming' && <ExternalLink className="w-4 h-4" />}
                     </Button>
-                    <span className="px-3 py-2 rounded-lg bg-muted/50 text-sm text-muted-foreground">Base</span>
-                    <span className="px-3 py-2 rounded-lg bg-muted/50 text-sm text-muted-foreground">FC</span>
+                    <a href="https://base.org" target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" className="px-4">Base</Button>
+                    </a>
+                    <a href="https://warpcast.com/fcbc" target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" className="px-4">FC</Button>
+                    </a>
                   </div>
                   
                   {/* Level Dots - Navigation */}
@@ -363,8 +457,8 @@ export default function Home() {
               </div>
               
               {/* Community Apps */}
-              <h3 className="text-xs font-title text-muted-foreground uppercase tracking-wider mb-3 mt-8">
-                Community FyreApps
+              <h3 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mt-8 mb-4">
+                Community <span className="text-primary">FyreApps</span>
               </h3>
               <div className="space-y-3 mb-6">
                 {communityApps.map((app, index) => (
@@ -400,16 +494,40 @@ export default function Home() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full gap-2 bg-muted/20 border-border/50 hover:bg-primary/10 hover:border-primary/30"
+                className="w-full gap-2 bg-muted/20 border-border/50 hover:bg-primary/10 hover:border-primary/30 mb-4"
               >
                 + Apply as a FyreApp/FyreGame builder
               </Button>
+              
+              {/* Discord Community CTA */}
+              <a 
+                href="https://discord.gg/fcbc" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <div className="glass-card rounded-xl p-4 md:p-5 text-center hover:border-primary/30 transition-colors cursor-pointer">
+                  <h4 className="text-sm font-title text-foreground mb-2">Join Our Discord Community</h4>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Connect with Fyre Traders, Breeders, and Builders
+                  </p>
+                  <Button variant="outline" className="gap-2">
+                    <ExternalLink className="w-3 h-3" />
+                    Join Discord
+                  </Button>
+                </div>
+              </a>
             </section>
             
             {/* Fyre PureBreed Index - Centralized */}
-            <FyrePureBreedIndex />
+            <section className="py-8">
+              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center mb-4 md:mb-6">
+                Fyre <span className="text-primary">PureBreed</span> Index
+              </h2>
+              <FyrePureBreedIndex />
+            </section>
             
-            <p className="text-center text-xs text-muted-foreground mt-12 pb-12">
+            <p className="text-center text-xs text-muted-foreground mt-8 pb-12">
               DNA Markets is the first onchain genetic ecosystem for bio RWAs.
             </p>
           </div>
@@ -423,22 +541,17 @@ export default function Home() {
 
 function PurebreedCard({ item }: { item: typeof featuredPurebreeds[0] }) {
   return (
-    <div className="glass-card rounded-xl overflow-hidden flex-shrink-0 w-[240px] md:w-[280px]">
+    <div className="glass-card rounded-xl overflow-hidden flex-shrink-0 w-[200px] md:w-[240px] snap-start">
       <div className="aspect-[16/10] bg-gradient-to-br from-muted/30 to-muted/10 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-30">
+        <div className="absolute inset-0 flex items-center justify-center text-3xl opacity-30">
           🧬
         </div>
       </div>
-      <div className="p-3 md:p-4">
+      <div className="p-3">
         <h3 className="text-sm font-title text-foreground mb-1">{item.name}</h3>
         <span className="inline-block text-[10px] px-2 py-0.5 rounded bg-destructive/10 text-destructive mb-2">
           {item.status}
         </span>
-        
-        <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-          <span>Base Squares</span>
-          <span className="font-title text-foreground">{item.baseSquares.toLocaleString()}</span>
-        </div>
         
         <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
           <div className="flex items-center gap-1">
@@ -459,7 +572,11 @@ function PurebreedCard({ item }: { item: typeof featuredPurebreeds[0] }) {
   );
 }
 
-function SnapshotsAndCustodySection() {
+interface SnapshotsProps {
+  onViewHint: () => void;
+}
+
+function SnapshotsAndCustodySection({ onViewHint }: SnapshotsProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 14, minutes: 30, seconds: 4 });
   
   useEffect(() => {
@@ -478,64 +595,61 @@ function SnapshotsAndCustodySection() {
   }, []);
   
   return (
-    <section className="py-8">
-      <div className="glass-card rounded-2xl p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-title text-primary uppercase tracking-wider">
-            Custody Hunting
-          </h3>
-          <button className="p-2 rounded-full hover:bg-muted/30 transition-colors">
-            <History className="w-4 h-4 text-muted-foreground" />
-          </button>
-        </div>
-        
-        <div className="flex items-center gap-2 mb-6">
+    <div className="glass-card rounded-2xl p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
           <Clock className="w-5 h-5 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">
             Next Snapshot In
           </span>
         </div>
-        
-        {/* Countdown Timer */}
-        <div className="grid grid-cols-4 gap-3 mb-6">
-          {[
-            { value: timeLeft.days, label: 'DAYS' },
-            { value: timeLeft.hours, label: 'HOURS' },
-            { value: timeLeft.minutes, label: 'MIN' },
-            { value: timeLeft.seconds, label: 'SEC' },
-          ].map((item) => (
-            <div key={item.label} className="glass-card rounded-xl p-3 text-center">
-              <div className="text-2xl md:text-3xl font-title text-primary mb-1">
-                {item.value}
-              </div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                {item.label}
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        {/* Last Week Snapshots */}
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="text-sm text-muted-foreground">Last Snapshot Signals:</span>
-          {snapshotTokens.map((token) => (
-            <span 
-              key={token}
-              className="px-3 py-1.5 rounded-full bg-muted/30 border border-border/50 text-sm text-foreground font-cta"
-            >
-              {token}
-            </span>
-          ))}
-        </div>
-        
-        <div className="flex justify-center">
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-8">
-            VIEW HINT
-          </Button>
-        </div>
+        <button className="p-2 rounded-full hover:bg-muted/30 transition-colors">
+          <History className="w-4 h-4 text-muted-foreground" />
+        </button>
       </div>
-    </section>
+      
+      {/* Countdown Timer */}
+      <div className="grid grid-cols-4 gap-3 mb-6">
+        {[
+          { value: timeLeft.days, label: 'DAYS' },
+          { value: timeLeft.hours, label: 'HOURS' },
+          { value: timeLeft.minutes, label: 'MIN' },
+          { value: timeLeft.seconds, label: 'SEC' },
+        ].map((item) => (
+          <div key={item.label} className="glass-card rounded-xl p-3 text-center">
+            <div className="text-2xl md:text-3xl font-title text-primary mb-1">
+              {item.value}
+            </div>
+            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
+              {item.label}
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {/* Last Week Snapshots */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <span className="text-sm text-muted-foreground">Last Snapshot Signals:</span>
+        {snapshotTokens.map((token) => (
+          <span 
+            key={token}
+            className="px-3 py-1.5 rounded-full bg-muted/30 border border-border/50 text-sm text-foreground font-cta"
+          >
+            {token}
+          </span>
+        ))}
+      </div>
+      
+      <div className="flex justify-center">
+        <Button 
+          onClick={onViewHint}
+          className="bg-primary hover:bg-primary/90 text-primary-foreground px-8"
+        >
+          VIEW HINT
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -543,43 +657,35 @@ function FyrePureBreedIndex() {
   const [showInfo, setShowInfo] = useState(false);
   
   return (
-    <section className="py-8">
-      <div className="glass-card rounded-2xl p-6 md:p-8 text-center">
-        <h2 className="text-sm font-title uppercase tracking-wider mb-6">
-          <span className="text-foreground">Fyre</span>{' '}
-          <span className="text-primary">PureBreed</span>{' '}
-          <span className="text-foreground">Index</span>
-        </h2>
-        
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <p className="text-sm text-muted-foreground">Total Ecosystem Value</p>
-          <button 
-            onClick={() => setShowInfo(!showInfo)}
-            className="p-1 rounded-full hover:bg-muted/30 transition-colors"
-          >
-            <HelpCircle className="w-4 h-4 text-muted-foreground" />
-          </button>
-        </div>
-        
-        <div className="text-4xl md:text-5xl lg:text-6xl font-title text-foreground mb-2">
-          271992.281 <span className="text-primary">DNA</span>
-        </div>
-        
-        <div className="flex items-center justify-center gap-2 text-sm">
-          <span className="text-success">+72%</span>
-          <span className="text-muted-foreground">last 24 hours</span>
-        </div>
-        
-        {showInfo && (
-          <div className="mt-4 p-4 rounded-lg bg-muted/20 animate-fade-in max-w-lg mx-auto">
-            <p className="text-sm text-muted-foreground text-left">
-              <strong className="text-foreground">How it's calculated:</strong> The Fyre PureBreed Index 
-              aggregates the total market value of all active DNA tokens, weighted by Base Square 
-              assignments and custody participation rates across all 234 species markets.
-            </p>
-          </div>
-        )}
+    <div className="glass-card rounded-2xl p-6 md:p-8 text-center max-w-2xl mx-auto">
+      <div className="flex items-center justify-center gap-2 mb-2">
+        <p className="text-sm text-muted-foreground">Total Ecosystem Value</p>
+        <button 
+          onClick={() => setShowInfo(!showInfo)}
+          className="p-1 rounded-full hover:bg-muted/30 transition-colors"
+        >
+          <HelpCircle className="w-4 h-4 text-muted-foreground" />
+        </button>
       </div>
-    </section>
+      
+      <div className="text-4xl md:text-5xl lg:text-6xl font-title text-foreground mb-2">
+        6,290,151 <span className="text-primary">DNA</span>
+      </div>
+      
+      <div className="flex items-center justify-center gap-2 text-sm">
+        <span className="text-success">+72%</span>
+        <span className="text-muted-foreground">last 24 hours</span>
+      </div>
+      
+      {showInfo && (
+        <div className="mt-4 p-4 rounded-lg bg-muted/20 animate-fade-in max-w-lg mx-auto">
+          <p className="text-sm text-muted-foreground text-left">
+            <strong className="text-foreground">How it's calculated:</strong> The Fyre PureBreed Index 
+            aggregates the total market value of all active DNA tokens, weighted by Base Square 
+            assignments and custody participation rates across all 234 species markets.
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
