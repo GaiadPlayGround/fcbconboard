@@ -7,6 +7,13 @@ export const initialChapters: Chapter[] = [
     isLocked: false,
     tasks: [
       {
+        id: '1-0',
+        title: 'Open FCBC.FUN',
+        status: 'done',
+        description: 'Welcome to FCBC! You\'re already here - claim your first reward.',
+        actionType: 'scan_balance', // Instant completion
+      },
+      {
         id: '1-1',
         title: 'Connect your Wallet',
         status: 'active',
@@ -41,6 +48,7 @@ export const initialChapters: Chapter[] = [
         status: 'pending',
         link: 'https://zora.co/invite/fcbc',
         isBonus: true,
+        isOptional: true,
       },
       {
         id: '1-b2',
@@ -48,6 +56,7 @@ export const initialChapters: Chapter[] = [
         status: 'pending',
         link: 'https://zora.co/@fcbc',
         isBonus: true,
+        isOptional: true,
       },
     ],
   },
@@ -83,6 +92,16 @@ export const initialChapters: Chapter[] = [
       },
       {
         id: '2-3',
+        title: 'Assign a Base Square',
+        status: 'locked',
+        description: 'Signal attention to your favorite PureBreed by assigning Base Squares.',
+        hasInfo: true,
+        infoText: 'Base Squares represent your signal strength',
+        link: 'https://fcbc.fun/gallery',
+        linkText: 'Choose a PureBreed',
+      },
+      {
+        id: '2-4',
         title: 'Own Fyre Oocyte Consumable',
         status: 'locked',
         description: 'Oocytes are premium breeding materials for rare hybrids.',
@@ -91,7 +110,7 @@ export const initialChapters: Chapter[] = [
         linkText: 'View on OpenSea',
       },
       {
-        id: '2-4',
+        id: '2-5',
         title: 'Buy first DNA token',
         status: 'locked',
         description: 'Purchase any PureBreed DNA token to start your collection.',
@@ -127,6 +146,22 @@ export const initialChapters: Chapter[] = [
         subtext: 'Introduce yourself. Share your favourite PureBreed.',
         actionType: 'submit_discord',
       },
+      {
+        id: '3-3',
+        title: 'Explore Our FyreApps',
+        status: 'locked',
+        description: 'Discover ecosystem tools built for the FCBC community.',
+        isOptional: true,
+        subTasks: [
+          { id: '3-3-a', title: 'Fyre Docs (FyreApp 0)', link: '#', completed: false },
+          { id: '3-3-b', title: 'PureBreed Explorer (FyreApp 1)', link: '#', completed: false },
+          { id: '3-3-c', title: 'Portfolio Manager (FyreApp 2)', link: '#', completed: false, optional: true },
+          { id: '3-3-d', title: 'Custody & Snapshots (FyreApp 3)', link: '#', completed: false, optional: true },
+          { id: '3-3-e', title: 'Fyre Labs (FyreApp 4)', link: '#', completed: false, optional: true },
+          { id: '3-3-f', title: 'Fyre Arena (FyreApp 5)', link: '#', completed: false, optional: true },
+          { id: '3-3-g', title: 'Fyre DEX (FyreApp 6)', link: '#', completed: false, optional: true },
+        ],
+      },
     ],
   },
   {
@@ -155,6 +190,13 @@ export const initialChapters: Chapter[] = [
       },
       {
         id: '4-3',
+        title: 'Collect 10k Fyre Keys',
+        status: 'locked',
+        description: 'Accumulate 10,000 Fyre Keys to unlock premium features.',
+        actionType: 'scan_balance', // Auto-complete when balance hits 10k
+      },
+      {
+        id: '4-4',
         title: 'Invite friends',
         status: 'locked',
         comingSoon: true,
@@ -166,7 +208,7 @@ export const initialChapters: Chapter[] = [
     id: 5,
     title: 'The Road Ahead',
     isLocked: true,
-    lockMessage: 'Locked',
+    lockMessage: 'Phase 2 - Coming Soon',
     tasks: [],
     roadmapItems: [
       'Portfolio tracking',
@@ -199,6 +241,7 @@ export const fyreApps: FyreApp[] = [
 
 export const communityFyreApps: FyreApp[] = [
   { id: 'c1', name: 'FyreHerald', subtitle: 'News Aggregator', description: 'News aggregator', status: 'live', isOfficial: false, creator: 'HawkNode' },
+  { id: 'c2', name: 'Fyre DEX', subtitle: 'Bio-RWA Exchange', description: 'Uniswap-style exchange exclusively for bio-RWAs on Base. Earn 5x the Fyre Keys rewards and contest for weekly prizes.', status: 'coming', isOfficial: false, creator: 'JariusOS' },
 ];
 
 export interface SnapshotToken {

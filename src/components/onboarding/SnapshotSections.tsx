@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Clock, History, Info, ChevronDown, Gift, Package } from 'lucide-react';
+import { Clock, History, Info, ChevronDown, Gift, Package, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { lastWeekSnapshots } from '@/data/onboardingData';
 
 export function SnapshotsCustodySection() {
@@ -22,17 +23,16 @@ export function SnapshotsCustodySection() {
   }, []);
   
   return (
-    <section className="py-8">
-      <h2 className="text-xl md:text-2xl font-title text-primary text-center mb-3">Snapshots and Custody</h2>
-      <p className="text-center text-muted-foreground text-sm mb-8 max-w-xl mx-auto">
-        Monitor Snapshot Events and earn custodian rights of the digital genomic signature of endangered species.
-      </p>
+    <section id="custody-hunting" className="py-8">
+      <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mb-4 md:mb-6">
+        Custody <span className="text-primary">Hunting</span>
+      </h2>
       
       <div className="glass-card rounded-xl p-5 md:p-6 max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm font-title text-foreground uppercase tracking-wide">Epoch 1 Ends In</span>
+            <span className="text-sm font-title text-foreground uppercase tracking-wide">Next Snapshot In</span>
           </div>
           <button className="p-2 rounded-full bg-muted/30 hover:bg-muted/50 transition-colors">
             <History className="w-4 h-4 text-muted-foreground" />
@@ -82,18 +82,71 @@ export function HowSnapshotsWork() {
         {isOpen && (
           <div className="px-4 pb-4 animate-fade-in">
             <div className="pt-2 space-y-3 text-sm text-muted-foreground">
-              <p>Snapshots capture the state of your holdings at random intervals during each epoch.</p>
-              <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Snapshots occur randomly within each epoch</li>
-                <li>Hold $FCBC tokens to qualify</li>
-                <li>More tokens = more custody weight</li>
-                <li>Rewards distributed at epoch end</li>
+              <p>A snapshot event is a scheduled moment where the system records blockchain holdings to identify the top holder of randomly selected FCBC Pre-assets.</p>
+              <ul className="list-disc list-inside space-y-2 ml-2">
+                <li>Snapshots occur once every week</li>
+                <li>Each event selects 3 to 10 random Pre-assets</li>
+                <li>Only the top holder of each selected species is recognized as the Custodian</li>
+                <li>Selection is random, so users cannot predict which species will be snapped</li>
               </ul>
             </div>
           </div>
         )}
       </div>
     </section>
+  );
+}
+
+interface BlindboxPopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+  boxNumber: number;
+}
+
+function BlindboxPopup({ isOpen, onClose, boxNumber }: BlindboxPopupProps) {
+  if (!isOpen) return null;
+  
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-fade-in">
+      <div className="glass-card rounded-2xl p-6 max-w-sm w-full relative">
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 p-1 rounded-full hover:bg-muted/30 transition-colors"
+        >
+          <X className="w-4 h-4 text-muted-foreground" />
+        </button>
+        
+        <div className="text-center">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <Package className="w-8 h-8 text-primary" />
+          </div>
+          
+          <h3 className="text-lg font-title text-foreground mb-2">Reveal Hint?</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Get a clue about which species might be snapped next. Become highest holder and receive its PureBreed NFT.
+          </p>
+          
+          <p className="text-xs text-muted-foreground mb-6">
+            Hints cost <span className="text-primary font-semibold">$1</span>
+          </p>
+          
+          <div className="flex gap-3">
+            <Button 
+              variant="outline" 
+              onClick={onClose}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button 
+              className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              Reveal
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -113,9 +166,6 @@ export function FyreBlindBoxes() {
               <p className="text-xs text-muted-foreground">Tap to reveal species hints</p>
             </div>
           </div>
-          <button className="px-4 py-2 rounded-full bg-primary text-primary-foreground text-sm font-cta hover:bg-primary/90 transition-colors">
-            Reveal for $1
-          </button>
         </div>
         
         {/* 2 rows of 5 boxes */}
@@ -126,7 +176,7 @@ export function FyreBlindBoxes() {
               onClick={() => setSelectedBox(num)}
               className={cn(
                 "aspect-square rounded-xl border-2 flex flex-col items-center justify-center transition-all relative",
-                selectedBox === num ? "border-primary bg-primary/10" : "border-border/50 bg-muted/20 hover:border-primary/50"
+                "border-border/50 bg-muted/20 hover:border-primary/50"
               )}
             >
               <Package className="w-5 h-5 md:w-6 md:h-6 text-primary mb-0.5" />
@@ -136,6 +186,12 @@ export function FyreBlindBoxes() {
           ))}
         </div>
       </div>
+      
+      <BlindboxPopup 
+        isOpen={selectedBox !== null}
+        onClose={() => setSelectedBox(null)}
+        boxNumber={selectedBox || 1}
+      />
     </section>
   );
 }

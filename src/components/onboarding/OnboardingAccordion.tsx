@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Chapter, Task, SubTask } from '@/types/onboarding';
 import { initialChapters } from '@/data/onboardingData';
 import { FyreKeyBalance } from './FyreKeyBalance';
@@ -7,7 +7,6 @@ import { TaskCompletionPopup } from './TaskCompletionPopup';
 import { WalletAddressPopup } from './WalletAddressPopup';
 import { SnapshotsCustodySection, HowSnapshotsWork, FyreBlindBoxes } from './SnapshotSections';
 import { EcosystemProductsSection } from './EcosystemProducts';
-import { WarplettTerminal } from './WarplettTerminal';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import CosmicBackground from '@/components/backgrounds/CosmicBackground';
@@ -56,6 +55,8 @@ function persistState(key: string, value: any) {
 }
 
 export function OnboardingAccordion() {
+  const location = useLocation();
+  
   // Initialize with persisted state
   const [chapters, setChapters] = useState<Chapter[]>(() => 
     loadPersistedState(STORAGE_KEYS.chapters, initialChapters)
@@ -122,6 +123,15 @@ export function OnboardingAccordion() {
   useEffect(() => {
     persistState(STORAGE_KEYS.chapters, chapters);
   }, [chapters]);
+  
+  // Scroll to custody-hunting section if hash is present
+  useEffect(() => {
+    if (location.hash === '#custody-hunting') {
+      setTimeout(() => {
+        document.getElementById('custody-hunting')?.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+    }
+  }, [location.hash]);
   
   const handleToggle = useCallback((chapterId: number) => {
     const chapter = chapters.find(c => c.id === chapterId);
@@ -329,29 +339,41 @@ export function OnboardingAccordion() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div id="chapters" className="lg:col-span-2 space-y-3 pt-4">
             {chapters.map((chapter) => (
-              <ChapterCardNew
-                key={chapter.id}
-                chapter={chapter}
-                isExpanded={expandedChapter === chapter.id}
-                onToggle={() => handleToggle(chapter.id)}
-                onCompleteTask={handleCompleteTask}
-                canClaim={isChapterMainComplete(chapter) && isChapterBonusComplete(chapter) && !claimedChapters.has(chapter.id)}
-                canClaimWithoutBonus={isChapterMainComplete(chapter) && !isChapterBonusComplete(chapter) && !claimedChapters.has(chapter.id) && chapter.id === 1}
-                onClaim={() => handleClaim(chapter.id)}
-                isClaimed={claimedChapters.has(chapter.id)}
-                walletConnected={walletConnected}
-                walletBalance={walletBalance}
-                onConnectWallet={handleConnectWallet}
-                onScanBalance={handleScanBalance}
-                onOpenAddressPopup={() => setShowAddressPopup(true)}
-                walletAddress={walletAddress}
-                completedBonusTasks={completedBonusTasks}
-                onBonusComplete={handleBonusTaskComplete}
-                subTasksCompleted={subTasksCompleted}
-                onSubTaskToggle={handleSubTaskToggle}
-                discordId={discordId}
-                onSubmitDiscord={handleSubmitDiscord}
-              />
+              <div key={chapter.id}>
+                {/* Phase 2 Indicator before Chapter 5 */}
+                {chapter.id === 5 && (
+                  <div className="flex items-center gap-3 py-4 mb-3">
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+                    <span className="text-xs font-title text-primary uppercase tracking-wider px-3 py-1 rounded-full border border-primary/30 bg-primary/10">
+                      Phase 2
+                    </span>
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+                  </div>
+                )}
+                <ChapterCardNew
+                  chapter={chapter}
+                  isExpanded={expandedChapter === chapter.id}
+                  onToggle={() => handleToggle(chapter.id)}
+                  onCompleteTask={handleCompleteTask}
+                  canClaim={isChapterMainComplete(chapter) && isChapterBonusComplete(chapter) && !claimedChapters.has(chapter.id)}
+                  canClaimWithoutBonus={isChapterMainComplete(chapter) && !isChapterBonusComplete(chapter) && !claimedChapters.has(chapter.id) && chapter.id === 1}
+                  onClaim={() => handleClaim(chapter.id)}
+                  isClaimed={claimedChapters.has(chapter.id)}
+                  walletConnected={walletConnected}
+                  walletBalance={walletBalance}
+                  onConnectWallet={handleConnectWallet}
+                  onScanBalance={handleScanBalance}
+                  onOpenAddressPopup={() => setShowAddressPopup(true)}
+                  walletAddress={walletAddress}
+                  completedBonusTasks={completedBonusTasks}
+                  onBonusComplete={handleBonusTaskComplete}
+                  subTasksCompleted={subTasksCompleted}
+                  onSubTaskToggle={handleSubTaskToggle}
+                  discordId={discordId}
+                  onSubmitDiscord={handleSubmitDiscord}
+                  fyreKeys={fyreKeys}
+                />
+              </div>
             ))}
           </div>
           
@@ -404,10 +426,6 @@ export function OnboardingAccordion() {
         
         {/* Additional Sections */}
         <div className="mt-12 space-y-6">
-          {/* Warplette Terminal */}
-          <div className="max-w-2xl mx-auto">
-            <WarplettTerminal />
-          </div>
           
           {/* Snapshots and Custody */}
           <SnapshotsCustodySection />
@@ -464,6 +482,7 @@ interface ChapterCardNewProps {
   onSubTaskToggle: (subTaskId: string, taskId: string) => void;
   discordId: string;
   onSubmitDiscord: (id: string) => void;
+  fyreKeys: number;
 }
 
 function ChapterCardNew({
@@ -487,6 +506,7 @@ function ChapterCardNew({
   onSubTaskToggle,
   discordId,
   onSubmitDiscord,
+  fyreKeys,
 }: ChapterCardNewProps) {
   const [showClaimAnimation, setShowClaimAnimation] = useState(false);
   const [discordInput, setDiscordInput] = useState('');
