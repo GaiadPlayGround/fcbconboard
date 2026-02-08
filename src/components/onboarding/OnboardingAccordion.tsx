@@ -675,24 +675,13 @@ function ChapterCardNew({
             </div>
           )}
           
-          {/* Bonus Tasks */}
+          {/* Bonus Tasks - Collapsed by default for Chapter 1 */}
           {chapter.bonusTasks && chapter.bonusTasks.length > 0 && !chapter.isLocked && (
-            <div className="mt-4 pt-3 border-t border-border/20">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                  Bonus
-                </span>
-                <span className="text-xs text-muted-foreground/60">(optional)</span>
-              </div>
-              {chapter.bonusTasks.map((task) => (
-                <BonusTaskItemNew 
-                  key={task.id} 
-                  task={task} 
-                  isCompleted={completedBonusTasks.has(task.id)}
-                  onComplete={() => onBonusComplete(task.id)}
-                />
-              ))}
-            </div>
+            <BonusTasksSection
+              chapter={chapter}
+              completedBonusTasks={completedBonusTasks}
+              onBonusComplete={onBonusComplete}
+            />
           )}
           
           {/* Roadmap Items */}
@@ -1018,6 +1007,57 @@ function BonusTaskItemNew({ task, isCompleted, onComplete }: BonusTaskItemNewPro
         <ExternalLink className="w-3 h-3" />
         Open
       </Button>
+    </div>
+  );
+}
+
+interface BonusTasksSectionProps {
+  chapter: Chapter;
+  completedBonusTasks: Set<string>;
+  onBonusComplete: (taskId: string) => void;
+}
+
+function BonusTasksSection({ chapter, completedBonusTasks, onBonusComplete }: BonusTasksSectionProps) {
+  const [isExpanded, setIsExpanded] = useState(chapter.id !== 1); // Collapsed by default for Chapter 1
+  
+  const completedCount = chapter.bonusTasks?.filter(t => completedBonusTasks.has(t.id)).length || 0;
+  const totalCount = chapter.bonusTasks?.length || 0;
+  
+  return (
+    <div className="mt-4 pt-3 border-t border-border/20">
+      <button 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex items-center justify-between py-1 hover:bg-muted/10 rounded transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground uppercase tracking-wider">
+            Bonus
+          </span>
+          <span className="text-xs text-muted-foreground/60">(optional)</span>
+          {totalCount > 0 && (
+            <span className="text-[10px] text-muted-foreground">
+              {completedCount}/{totalCount}
+            </span>
+          )}
+        </div>
+        <ChevronDown className={cn(
+          "w-4 h-4 text-muted-foreground transition-transform",
+          isExpanded && "rotate-180"
+        )} />
+      </button>
+      
+      {isExpanded && chapter.bonusTasks && (
+        <div className="mt-2 animate-fade-in">
+          {chapter.bonusTasks.map((task) => (
+            <BonusTaskItemNew 
+              key={task.id} 
+              task={task} 
+              isCompleted={completedBonusTasks.has(task.id)}
+              onComplete={() => onBonusComplete(task.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

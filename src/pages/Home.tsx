@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Clock, History, HelpCircle, TrendingUp, Users, Sparkles, ExternalLink, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Clock, History, HelpCircle, TrendingUp, Users, Sparkles, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { WarplettTerminal } from '@/components/onboarding/WarplettTerminal';
-import Galaxy from '@/components/backgrounds/Galaxy';
+import Orb from '@/components/backgrounds/Orb';
 import CosmicBackground from '@/components/backgrounds/CosmicBackground';
 import { cn } from '@/lib/utils';
 
@@ -159,44 +159,37 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative">
+    <div className="min-h-screen bg-background text-foreground relative overflow-x-hidden">
       <Header />
       
       <main className="relative z-10">
-        {/* Hero Section with Galaxy Background */}
+        {/* Hero Section with Orb Background */}
         <section className="relative min-h-[100svh] flex flex-col">
-          {/* Galaxy Background - Only for hero section */}
+          {/* Orb Background - Only for hero section */}
           <div className="absolute inset-0 z-0">
-            <Galaxy 
-              mouseRepulsion
-              mouseInteraction
-              density={1.9}
-              glowIntensity={0.3}
-              saturation={0.3}
-              hueShift={300}
-              twinkleIntensity={0}
-              rotationSpeed={0.05}
-              repulsionStrength={0.5}
-              autoCenterRepulsion={0}
-              starSpeed={0.3}
-              speed={0.6}
+            <Orb 
+              hoverIntensity={0.15}
+              rotateOnHover
+              hue={220}
+              forceHoverState={false}
+              backgroundColor="#0a0a0f"
             />
           </div>
           
-          <div className="container max-w-6xl mx-auto px-4 pt-24 md:pt-28 pb-4 relative z-10 flex-1 flex flex-col">
+          <div className="container max-w-6xl mx-auto px-4 pt-20 md:pt-24 pb-4 relative z-10 flex-1 flex flex-col">
             {/* Hero Content */}
-            <div className="text-center flex-1 flex flex-col justify-center">
-              <p className="text-xs md:text-sm tracking-[0.25em] text-muted-foreground uppercase mb-4 md:mb-6">
+            <div className="text-center flex-1 flex flex-col justify-center max-w-3xl mx-auto">
+              <p className="text-[10px] md:text-xs tracking-[0.25em] text-muted-foreground uppercase mb-3 md:mb-4">
                 A BASE ORIGINAL
               </p>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-title text-foreground leading-tight mb-4 md:mb-6">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-title text-foreground leading-tight mb-3 md:mb-4 px-2">
                 OPEN ATTENTION MARKETS<br />
                 FOR ENDANGERED SPECIES.
               </h1>
               
               {/* Subcaption with ELI5 toggle */}
-              <div className="relative max-w-lg mx-auto mb-6 md:mb-8">
-                <p className="text-muted-foreground text-sm md:text-base pr-12">
+              <div className="relative flex items-center justify-center gap-2 mb-4 md:mb-6 px-4">
+                <p className="text-muted-foreground text-xs md:text-sm max-w-md">
                   {eli5Mode 
                     ? "Holders of DNA tokens can combine different species to create original, CCO collectibles for art and GameFi"
                     : "DNA-based bio-digital resources for community-driven IP generation on Base."
@@ -205,10 +198,10 @@ export default function Home() {
                 <button
                   onClick={() => setEli5Mode(!eli5Mode)}
                   className={cn(
-                    "absolute right-0 top-0 px-2 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all",
+                    "flex-shrink-0 w-8 h-4 rounded-sm text-[8px] font-medium uppercase tracking-wider transition-all border",
                     eli5Mode 
-                      ? "bg-primary/20 text-primary border border-primary/30" 
-                      : "bg-muted/30 text-muted-foreground border border-border/50 hover:bg-muted/50"
+                      ? "bg-primary/20 text-primary border-primary/30 animate-pulse-glow" 
+                      : "bg-muted/20 text-muted-foreground border-border/50 hover:bg-muted/30"
                   )}
                 >
                   eli5
@@ -216,52 +209,61 @@ export default function Home() {
               </div>
               
               {/* Warplette Terminal */}
-              <div className="max-w-2xl mx-auto w-full mb-6 md:mb-8">
+              <div className="max-w-lg mx-auto w-full mb-4 md:mb-6 px-2">
                 <WarplettTerminal />
               </div>
               
               {/* CTAs */}
-              <div className="flex flex-row items-center justify-center gap-3 md:gap-4 mb-6 md:mb-8">
-                <a href="https://fcbc.fun/gallery" target="_blank" rel="noopener noreferrer">
+              <div className="flex flex-col items-center gap-3 mb-4 md:mb-6 px-4">
+                <div className="flex flex-row items-center justify-center gap-2 md:gap-3 w-full max-w-md">
+                  <a href="https://fcbc.fun/gallery" target="_blank" rel="noopener noreferrer" className="flex-1">
+                    <Button 
+                      variant="ghost" 
+                      className="w-full gap-1.5 px-4 py-2.5 h-10 text-xs font-cta border border-border/30 hover:bg-muted/20 text-foreground"
+                    >
+                      EXPLORE GALLERY
+                    </Button>
+                  </a>
+                  <Link to="/participate" className="flex-1">
+                    <Button 
+                      variant="ghost"
+                      className="w-full gap-1.5 px-4 py-2.5 h-10 text-xs font-cta border border-border/30 hover:bg-muted/20 text-foreground"
+                    >
+                      JOIN CLUB
+                    </Button>
+                  </Link>
+                </div>
+                
+                {/* Wide BEGIN button */}
+                <Link to="/participate" className="w-full max-w-md">
                   <Button 
-                    variant="ghost" 
-                    className="gap-2 px-6 md:px-8 py-3 h-11 md:h-12 text-sm font-cta border border-border/30 hover:bg-muted/20 text-foreground"
-                  >
-                    EXPLORE GALLERY
-                  </Button>
-                </a>
-                <a 
-                  href="https://00.fcbc.fun/get-started" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <Button 
-                    variant="ghost"
-                    className="gap-2 px-6 md:px-8 py-3 h-11 md:h-12 text-sm font-cta border border-border/30 hover:bg-muted/20 text-foreground"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    Ask Warplette
-                  </Button>
-                </a>
-                <Link to="/participate">
-                  <Button 
-                    className="gap-2 px-8 md:px-12 py-3 h-11 md:h-12 text-sm font-cta bg-primary hover:bg-primary/90 text-primary-foreground animate-rainbow-glow"
+                    className="w-full gap-2 py-3 h-12 text-sm font-cta bg-primary hover:bg-primary/90 text-primary-foreground animate-rainbow-glow"
                   >
                     BEGIN
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
+                
+                {/* Ask Warplette text link */}
+                <a 
+                  href="https://00.fcbc.fun/get-started" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  or ask Warplette →
+                </a>
               </div>
             </div>
             
-            {/* Stats Marquee Bar - End of Galaxy section */}
-            <div className="relative py-4 border-t border-b border-border/30 overflow-hidden">
-              <div className="flex animate-marquee whitespace-nowrap">
-                {[...marqueeStats, ...marqueeStats].map((stat, index) => (
-                  <div key={index} className="flex items-center gap-2 mx-4 md:mx-6">
-                    <span className="text-lg md:text-2xl font-title text-foreground">{stat.value}</span>
-                    <span className="text-xs text-muted-foreground uppercase">{stat.label}</span>
-                    <span className="text-muted-foreground/30 mx-2">·</span>
+            {/* Stats Marquee Bar - End of Orb section */}
+            <div className="relative py-3 border-t border-b border-border/30 overflow-hidden">
+              <div className="flex animate-marquee-fast whitespace-nowrap">
+                {[...marqueeStats, ...marqueeStats, ...marqueeStats].map((stat, index) => (
+                  <div key={index} className="flex items-center gap-1.5 mx-3 md:mx-4">
+                    <span className="text-base md:text-xl font-title text-foreground">{stat.value}</span>
+                    <span className="text-[10px] md:text-xs text-muted-foreground uppercase">{stat.label}</span>
+                    <span className="text-muted-foreground/30 mx-1.5">·</span>
                   </div>
                 ))}
               </div>
@@ -275,23 +277,22 @@ export default function Home() {
           
           <div className="container max-w-6xl mx-auto px-4 relative z-10">
             {/* Featured Purebreeds - Double Row Marquee with Manual Swipe */}
-            <section className="py-8 md:py-12">
-              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mb-4 md:mb-6">
+            <section className="py-6 md:py-10">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-title text-foreground text-center mb-4 md:mb-6">
                 Featured <span className="text-primary">PureBreeds</span>
               </h2>
               
               {/* Row 1 - 7 species */}
-              <div className="relative mb-4">
+              <div className="relative mb-3">
                 <button 
                   onClick={() => scrollMarquee(row1Ref, 'left')}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <div 
                   ref={row1Ref}
-                  className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 touch-pan-x"
                 >
                   {featuredPurebreeds.slice(0, 7).map((item) => (
                     <PurebreedCard key={`row1-${item.id}`} item={item} />
@@ -299,7 +300,7 @@ export default function Home() {
                 </div>
                 <button 
                   onClick={() => scrollMarquee(row1Ref, 'right')}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -309,14 +310,13 @@ export default function Home() {
               <div className="relative">
                 <button 
                   onClick={() => scrollMarquee(row2Ref, 'left')}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <div 
                   ref={row2Ref}
-                  className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 touch-pan-x"
                 >
                   {featuredPurebreeds.slice(7, 14).map((item) => (
                     <PurebreedCard key={`row2-${item.id}`} item={item} />
@@ -324,7 +324,7 @@ export default function Home() {
                 </div>
                 <button 
                   onClick={() => scrollMarquee(row2Ref, 'right')}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-1.5 bg-background/80 backdrop-blur-sm rounded-full border border-border/50 hover:bg-muted/50 transition-colors hidden md:flex"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -332,68 +332,66 @@ export default function Home() {
             </section>
             
             {/* How DNA Markets Work */}
-            <section className="py-8">
-              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mb-4 md:mb-6">
+            <section className="py-6 md:py-8">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-title text-foreground text-center mb-4 md:mb-6">
                 How DNA Markets <span className="text-primary">Work</span>
               </h2>
               
-              <div className="grid grid-cols-2 gap-3 md:gap-4">
+              <div className="grid grid-cols-2 gap-2 md:gap-4">
                 {howItWorks.map((item, index) => (
                   <div 
                     key={index}
-                    className="glass-card rounded-xl p-4 md:p-5 group hover:border-primary/30 transition-colors"
+                    className="glass-card rounded-xl p-3 md:p-5 group hover:border-primary/30 transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-sm font-title text-foreground">
+                      <h3 className="text-xs md:text-sm font-title text-foreground">
                         {item.title.replace(item.highlight, '')}
                         <span className="text-primary">{item.highlight}</span>
                       </h3>
-                      <span className="text-lg">{item.icon}</span>
+                      <span className="text-base md:text-lg">{item.icon}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
+                    <p className="text-[10px] md:text-xs text-muted-foreground leading-relaxed">{item.description}</p>
                   </div>
                 ))}
               </div>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+              <div className="flex flex-col items-center gap-3 mt-6">
+                <Link to="/participate" className="w-full max-w-sm">
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 h-11 font-cta animate-rainbow-glow">
+                    BEGIN
+                  </Button>
+                </Link>
                 <a 
                   href="https://00.fcbc.fun/get-started" 
                   target="_blank" 
                   rel="noopener noreferrer"
+                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
                 >
-                  <Button variant="ghost" className="gap-2 px-6 md:px-8 py-3 h-11 md:h-12 font-cta border border-border/30 hover:bg-muted/20">
-                    <MessageSquare className="w-4 h-4" />
-                    Ask Warplette
-                  </Button>
+                  or ask Warplette →
                 </a>
-                <Link to="/participate">
-                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 md:px-12 py-3 h-11 md:h-12 font-cta animate-rainbow-glow">
-                    BEGIN
-                  </Button>
-                </Link>
               </div>
             </section>
             
             {/* Custody Hunting */}
-            <section id="custody-hunting" className="py-8">
-              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mb-4 md:mb-6">
+            <section id="custody-hunting" className="py-6 md:py-8">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-title text-foreground text-center mb-4 md:mb-6">
                 Custody <span className="text-primary">Hunting</span>
               </h2>
               <SnapshotsAndCustodySection onViewHint={handleViewHint} />
             </section>
             
             {/* Ecosystem Products - Single Card with Navigation */}
-            <section className="py-8">
-              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mb-4 md:mb-6">
+            <section className="py-6 md:py-8">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-title text-foreground text-center mb-4 md:mb-6">
                 Ecosystem <span className="text-primary">Products</span>
               </h2>
               
               <div className="glass-card rounded-2xl overflow-hidden">
-                <div className="p-5 md:p-6">
+                <div className="p-4 md:p-6">
                   {/* Official Badge */}
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs">
-                      <Sparkles className="w-3 h-3" />
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px]">
+                      <Sparkles className="w-2.5 h-2.5" />
                       OFFICIAL
                     </span>
                     <span className={cn(
@@ -405,20 +403,20 @@ export default function Home() {
                   </div>
                   
                   {/* Title */}
-                  <h3 className="text-xl md:text-2xl font-title text-foreground mb-1">FyreApp {selectedProduct.id}</h3>
-                  <a href="#" className="text-base text-primary hover:underline mb-2 block">{selectedProduct.name}</a>
-                  <p className="text-sm text-muted-foreground mb-1">{selectedProduct.subtitle}</p>
+                  <h3 className="text-lg md:text-xl font-title text-foreground mb-1">FyreApp {selectedProduct.id}</h3>
+                  <a href="#" className="text-sm text-primary hover:underline mb-1 block">{selectedProduct.name}</a>
+                  <p className="text-xs text-muted-foreground mb-1">{selectedProduct.subtitle}</p>
                   
                   {/* Description */}
-                  <p className="text-sm text-muted-foreground mt-4 mb-6 leading-relaxed">
+                  <p className="text-xs text-muted-foreground mt-3 mb-4 leading-relaxed">
                     {selectedProduct.description}
                   </p>
                   
                   {/* CTA and Tags */}
-                  <div className="flex items-center gap-3 mb-6">
+                  <div className="flex items-center gap-2 mb-4">
                     <Button 
                       className={cn(
-                        "flex-1 gap-2",
+                        "flex-1 gap-2 text-xs h-9",
                         selectedProduct.status === 'coming' 
                           ? "bg-muted text-muted-foreground cursor-not-allowed" 
                           : "bg-primary hover:bg-primary/90 text-primary-foreground"
@@ -426,24 +424,24 @@ export default function Home() {
                       disabled={selectedProduct.status === 'coming'}
                     >
                       {selectedProduct.status === 'coming' ? 'Coming Soon' : 'View'}
-                      {selectedProduct.status !== 'coming' && <ExternalLink className="w-4 h-4" />}
+                      {selectedProduct.status !== 'coming' && <ExternalLink className="w-3 h-3" />}
                     </Button>
                     <a href="https://base.org" target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" className="px-4">Base</Button>
+                      <Button variant="outline" size="sm" className="px-3 h-9 text-xs">Base</Button>
                     </a>
                     <a href="https://warpcast.com/fcbc" target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" className="px-4">FC</Button>
+                      <Button variant="outline" size="sm" className="px-3 h-9 text-xs">FC</Button>
                     </a>
                   </div>
                   
                   {/* Level Dots - Navigation */}
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-center gap-1.5">
                     {ecosystemProducts.slice(0, 7).map((_, index) => (
                       <button 
                         key={index}
                         onClick={() => setSelectedProductIndex(index)}
                         className={cn(
-                          "w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs md:text-sm font-title border transition-all",
+                          "w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-[10px] md:text-xs font-title border transition-all",
                           index === selectedProductIndex 
                             ? "bg-primary text-primary-foreground border-primary" 
                             : "bg-muted/30 text-muted-foreground border-border/50 hover:bg-muted/50"
@@ -457,32 +455,32 @@ export default function Home() {
               </div>
               
               {/* Community Apps */}
-              <h3 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center md:text-left mt-8 mb-4">
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-title text-foreground text-center mt-8 mb-4">
                 Community <span className="text-primary">FyreApps</span>
               </h3>
-              <div className="space-y-3 mb-6">
+              <div className="space-y-2 mb-4">
                 {communityApps.map((app, index) => (
                   <div 
                     key={index}
-                    className="glass-card rounded-xl p-4 flex items-center justify-between"
+                    className="glass-card rounded-xl p-3 md:p-4 flex items-center justify-between gap-3"
                   >
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-title text-foreground">{app.name}</span>
-                        <span className="text-xs text-muted-foreground">by {app.builder}</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <span className="text-xs md:text-sm font-title text-foreground">{app.name}</span>
+                        <span className="text-[10px] text-muted-foreground">by {app.builder}</span>
                         <span className={cn(
-                          "px-2 py-0.5 rounded-full text-[10px] font-medium uppercase",
+                          "px-1.5 py-0.5 rounded-full text-[9px] font-medium uppercase",
                           statusColors[app.status]
                         )}>
                           {app.status}
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground">{app.description}</p>
+                      <p className="text-[10px] md:text-xs text-muted-foreground line-clamp-2">{app.description}</p>
                     </div>
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="text-xs shrink-0"
+                      className="text-[10px] h-7 shrink-0"
                       disabled={app.status === 'coming'}
                     >
                       {app.status === 'coming' ? 'Soon' : 'View'}
@@ -494,7 +492,7 @@ export default function Home() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full gap-2 bg-muted/20 border-border/50 hover:bg-primary/10 hover:border-primary/30 mb-4"
+                className="w-full gap-2 bg-muted/20 border-border/50 hover:bg-primary/10 hover:border-primary/30 mb-4 text-xs"
               >
                 + Apply as a FyreApp/FyreGame builder
               </Button>
@@ -506,28 +504,36 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="block"
               >
-                <div className="glass-card rounded-xl p-4 md:p-5 text-center hover:border-primary/30 transition-colors cursor-pointer">
-                  <h4 className="text-sm font-title text-foreground mb-2">Join Our Discord Community</h4>
+                <div className="glass-card rounded-xl p-4 text-center hover:border-primary/30 transition-colors cursor-pointer">
+                  <h4 className="text-sm font-title text-foreground mb-1">Our Community</h4>
                   <p className="text-xs text-muted-foreground mb-3">
                     Connect with Fyre Traders, Breeders, and Builders
                   </p>
-                  <Button variant="outline" className="gap-2">
-                    <ExternalLink className="w-3 h-3" />
-                    Join Discord
-                  </Button>
+                  <div className="flex items-center justify-center gap-2">
+                    <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8">
+                      <ExternalLink className="w-3 h-3" />
+                      Join Discord
+                    </Button>
+                    <a href="https://x.com/fcbc" target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8">
+                        <ExternalLink className="w-3 h-3" />
+                        Follow on X
+                      </Button>
+                    </a>
+                  </div>
                 </div>
               </a>
             </section>
             
             {/* Fyre PureBreed Index - Centralized */}
-            <section className="py-8">
-              <h2 className="text-lg md:text-xl lg:text-2xl font-title text-foreground text-center mb-4 md:mb-6">
+            <section className="py-6 md:py-8">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-title text-foreground text-center mb-4 md:mb-6">
                 Fyre <span className="text-primary">PureBreed</span> Index
               </h2>
               <FyrePureBreedIndex />
             </section>
             
-            <p className="text-center text-xs text-muted-foreground mt-8 pb-12">
+            <p className="text-center text-[10px] md:text-xs text-muted-foreground mt-6 pb-8">
               DNA Markets is the first onchain genetic ecosystem for bio RWAs.
             </p>
           </div>
@@ -541,30 +547,30 @@ export default function Home() {
 
 function PurebreedCard({ item }: { item: typeof featuredPurebreeds[0] }) {
   return (
-    <div className="glass-card rounded-xl overflow-hidden flex-shrink-0 w-[200px] md:w-[240px] snap-start">
+    <div className="glass-card rounded-xl overflow-hidden flex-shrink-0 w-[140px] md:w-[180px] snap-start">
       <div className="aspect-[16/10] bg-gradient-to-br from-muted/30 to-muted/10 relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center text-3xl opacity-30">
+        <div className="absolute inset-0 flex items-center justify-center text-2xl md:text-3xl opacity-30">
           🧬
         </div>
       </div>
-      <div className="p-3">
-        <h3 className="text-sm font-title text-foreground mb-1">{item.name}</h3>
-        <span className="inline-block text-[10px] px-2 py-0.5 rounded bg-destructive/10 text-destructive mb-2">
+      <div className="p-2 md:p-3">
+        <h3 className="text-[11px] md:text-sm font-title text-foreground mb-0.5 truncate">{item.name}</h3>
+        <span className="inline-block text-[8px] md:text-[10px] px-1.5 py-0.5 rounded bg-destructive/10 text-destructive mb-1.5">
           {item.status}
         </span>
         
-        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-3">
-          <div className="flex items-center gap-1">
-            <TrendingUp className="w-3 h-3 text-success" />
+        <div className="flex items-center gap-2 text-[9px] md:text-xs text-muted-foreground mb-2">
+          <div className="flex items-center gap-0.5">
+            <TrendingUp className="w-2.5 h-2.5 text-success" />
             <span>{item.mcap}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Users className="w-3 h-3 text-primary" />
+          <div className="flex items-center gap-0.5">
+            <Users className="w-2.5 h-2.5 text-primary" />
             <span>{item.holders}</span>
           </div>
         </div>
         
-        <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-8">
+        <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-[9px] md:text-xs h-6 md:h-7">
           Signal Attention
         </Button>
       </div>
@@ -577,7 +583,7 @@ interface SnapshotsProps {
 }
 
 function SnapshotsAndCustodySection({ onViewHint }: SnapshotsProps) {
-  const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 14, minutes: 30, seconds: 4 });
+  const [timeLeft, setTimeLeft] = useState({ days: 7, hours: 0, minutes: 0, seconds: 0 });
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -595,46 +601,46 @@ function SnapshotsAndCustodySection({ onViewHint }: SnapshotsProps) {
   }, []);
   
   return (
-    <div className="glass-card rounded-2xl p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+    <div className="glass-card rounded-2xl p-4 md:p-6 max-w-2xl mx-auto">
+      {/* Header with Title */}
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Clock className="w-5 h-5 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
+          <Clock className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs md:text-sm text-muted-foreground">
             Next Snapshot In
           </span>
         </div>
-        <button className="p-2 rounded-full hover:bg-muted/30 transition-colors">
-          <History className="w-4 h-4 text-muted-foreground" />
+        <button className="p-1.5 rounded-full hover:bg-muted/30 transition-colors">
+          <History className="w-3.5 h-3.5 text-muted-foreground" />
         </button>
       </div>
       
       {/* Countdown Timer */}
-      <div className="grid grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-4 gap-2 mb-4">
         {[
           { value: timeLeft.days, label: 'DAYS' },
-          { value: timeLeft.hours, label: 'HOURS' },
+          { value: timeLeft.hours, label: 'HRS' },
           { value: timeLeft.minutes, label: 'MIN' },
           { value: timeLeft.seconds, label: 'SEC' },
         ].map((item) => (
-          <div key={item.label} className="glass-card rounded-xl p-3 text-center">
-            <div className="text-2xl md:text-3xl font-title text-primary mb-1">
+          <div key={item.label} className="glass-card rounded-lg p-2 md:p-3 text-center">
+            <div className="text-lg md:text-2xl font-title text-primary mb-0.5">
               {item.value}
             </div>
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
+            <div className="text-[8px] md:text-[10px] text-muted-foreground uppercase tracking-wider">
               {item.label}
             </div>
           </div>
         ))}
       </div>
       
-      {/* Last Week Snapshots */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <span className="text-sm text-muted-foreground">Last Snapshot Signals:</span>
+      {/* Last Week Snapshots - Smaller tags */}
+      <div className="flex flex-wrap items-center gap-1.5 mb-4">
+        <span className="text-[10px] md:text-xs text-muted-foreground">Last Snapshot Signals:</span>
         {snapshotTokens.map((token) => (
           <span 
             key={token}
-            className="px-3 py-1.5 rounded-full bg-muted/30 border border-border/50 text-sm text-foreground font-cta"
+            className="px-1.5 py-0.5 rounded bg-muted/30 border border-border/50 text-[9px] md:text-[10px] text-foreground font-cta"
           >
             {token}
           </span>
@@ -644,7 +650,8 @@ function SnapshotsAndCustodySection({ onViewHint }: SnapshotsProps) {
       <div className="flex justify-center">
         <Button 
           onClick={onViewHint}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground px-8"
+          size="sm"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 h-8 text-xs"
         >
           VIEW HINT
         </Button>
@@ -657,29 +664,29 @@ function FyrePureBreedIndex() {
   const [showInfo, setShowInfo] = useState(false);
   
   return (
-    <div className="glass-card rounded-2xl p-6 md:p-8 text-center max-w-2xl mx-auto">
+    <div className="glass-card rounded-2xl p-4 md:p-6 text-center max-w-xl mx-auto">
       <div className="flex items-center justify-center gap-2 mb-2">
-        <p className="text-sm text-muted-foreground">Total Ecosystem Value</p>
+        <p className="text-xs text-muted-foreground">Total Ecosystem Value</p>
         <button 
           onClick={() => setShowInfo(!showInfo)}
-          className="p-1 rounded-full hover:bg-muted/30 transition-colors"
+          className="p-0.5 rounded-full hover:bg-muted/30 transition-colors"
         >
-          <HelpCircle className="w-4 h-4 text-muted-foreground" />
+          <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
         </button>
       </div>
       
-      <div className="text-4xl md:text-5xl lg:text-6xl font-title text-foreground mb-2">
+      <div className="text-2xl md:text-4xl lg:text-5xl font-title text-foreground mb-2">
         6,290,151 <span className="text-primary">DNA</span>
       </div>
       
-      <div className="flex items-center justify-center gap-2 text-sm">
+      <div className="flex items-center justify-center gap-2 text-xs">
         <span className="text-success">+72%</span>
         <span className="text-muted-foreground">last 24 hours</span>
       </div>
       
       {showInfo && (
-        <div className="mt-4 p-4 rounded-lg bg-muted/20 animate-fade-in max-w-lg mx-auto">
-          <p className="text-sm text-muted-foreground text-left">
+        <div className="mt-4 p-3 rounded-lg bg-muted/20 animate-fade-in">
+          <p className="text-[10px] md:text-xs text-muted-foreground text-left">
             <strong className="text-foreground">How it's calculated:</strong> The Fyre PureBreed Index 
             aggregates the total market value of all active DNA tokens, weighted by Base Square 
             assignments and custody participation rates across all 234 species markets.

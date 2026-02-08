@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { lastWeekSnapshots } from '@/data/onboardingData';
 
 export function SnapshotsCustodySection() {
-  const [timeLeft, setTimeLeft] = useState({ days: 2, hours: 14, minutes: 30, seconds: 28 });
+  const [timeLeft, setTimeLeft] = useState({ days: 7, hours: 0, minutes: 0, seconds: 0 });
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -53,10 +53,10 @@ export function SnapshotsCustodySection() {
           ))}
         </div>
         
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-muted-foreground">Last week Snapshots:</span>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[10px] md:text-xs text-muted-foreground">Last Snapshot Signals:</span>
           {lastWeekSnapshots.map((token) => (
-            <span key={token.id} className="px-3 py-1 rounded-full bg-muted/40 border border-border/30 text-sm text-foreground">
+            <span key={token.id} className="px-1.5 py-0.5 rounded bg-muted/30 border border-border/30 text-[9px] md:text-[10px] text-foreground font-cta">
               {token.symbol}
             </span>
           ))}
